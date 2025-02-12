@@ -1,0 +1,50 @@
+/* Define styles */
+
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between; /* Space out logo and navigation */
+    align-items: center; /* Center the items vertically */
+    background-color: #333; /* Dark background for the header */
+    padding: 10px 20px; /* Add some padding around the header */
+}
+
+/* Logo Styles */
+header .logo img {
+    height: 50px; /* Set logo height */
+    width: auto; /* Maintain aspect ratio */
+}
+
+/* Navigation Styles */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Space out the navigation items */
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline-block;
+}
+
+nav ul li a {
+    color: white; /* Text color for links */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px;
+    padding: 5px 10px; /* Add padding to the links */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+}
+
+/* Hover Effect for Links */
+nav ul li a:hover {
+    background-color: #575757; /* Darker background when hovering */
+    border-radius: 5px; /* Rounded corners for the hover effect */
+}
