@@ -68,6 +68,9 @@ app.use('/login', loginRoutes);
 const registerRoutes = require('./routes/register');
 app.use('/register', registerRoutes);
 
+const travelGuideRouter = require('./routes/travel-guide');
+app.use('/travel-guide', travelGuideRouter);
+
 // Logout 
 app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
