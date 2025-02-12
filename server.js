@@ -56,6 +56,10 @@ app.get('/', (req,res) => {
     });
 });
 
+app.get('/manage-trips', (req,res) => {
+    res.render("manage-trips");
+});
+
 // Login 
 const loginRoutes = require('./routes/login');
 app.use('/login', loginRoutes);
