@@ -1,2 +1,11 @@
-1111
+<h1>Travel Guide</h1>
 
+<% blogPosts.forEach(post => { %>
+    <div class="blog-post">  
+      <h2><%= post.title %></h2>
+      <p><%= post.content %></p>
+      <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
+      <p>By User <%= post.user_id %></p> 
+      <a href="/travel-guide/<%= post.post_id %>">Read More</a> 
+    </div>
+  <% }); %>
