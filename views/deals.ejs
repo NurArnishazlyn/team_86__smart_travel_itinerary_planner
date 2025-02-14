@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo" class="logo">
+        </div>
+    </header>
+
+    <h1>Deals & Promotions</h1>
+
+    <% deals.forEach(deal => { %>
+        <div class="deal">
+            <h2><%= deal.title %></h2>
+            <p><%= deal.description %></p>
+            <% if (deal.image) { %>
+                <img src="<%= deal.image %>" alt="<%= deal.title %>">
+            <% } %>
+        </div>
+    <% }); %>
+
+    <a href="/">Back to Home</a>
+
+</body>
+</html>
