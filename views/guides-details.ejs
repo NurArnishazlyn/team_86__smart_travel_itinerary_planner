@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Guide Details</title>
+    <link rel="stylesheet" href="/css/main.css">  </head>
+<body>
+    <% if (post) { %>
+        <h1><%= post.title %></h1>
+        <p>Country: <%= post.country %></p>
+        <p><%= post.content %></p>
+        <% if (post.image_path) { %>
+            <img src="<%= post.image_path %>" alt="<%= post.title %>">
+        <% } %>
+        <p>By User <%= post.user_id %></p>
+        <a href="/travel-guide">Back to Travel Guide</a>
+    <% } else { %>
+        <p>Post not found.</p>
+    <% } %>
+</body>
+</html>
+
