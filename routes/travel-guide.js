@@ -19,6 +19,22 @@ router.get('/', (req, res) => {
   });
 });
 
+router.get('/:postId', (req, res) => {
+  const postId = req.params.postId;
+  const sql = `SELECT * FROM blog_posts WHERE post_id = ${postId}`; // SQL with parameterization
+
+  db.get(sql, (err, post) => { // Use db.get for single row result
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Database error');
+      }
+      if (!post) {   // Handle case where no post is found
+          return res.status(404).render('guides-details.ejs', { post: null }); // Or redirect, as needed
+      }
+      res.render('guides-details.ejs', { post: post });
+  });
+});
+
 
 module.exports = router;
 
