@@ -1,34 +1,11 @@
 <h1>Travel Guide</h1>
 
-<div class="country-buttons">
-  <button onclick="filterPosts('Japan')">Japan</button>
-  <button onclick="filterPosts('France')">France</button>
-  <button onclick="filterPosts('China')">China</button>
-  <button onclick="filterPosts('Singapore')">Singapore</button>
-  <button onclick="filterPosts('All')">All</button> </div>
-
-<div id="blog-posts-container">
 <% blogPosts.forEach(post => { %>
-    <div class="blog-post" data-country="<%= post.country %>">  
+    <div class="blog-post">  
       <h2><%= post.title %></h2>
       <p><%= post.content %></p>
-      <p>Country: <%= post.country %></p> <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
+      <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
       <p>By User <%= post.user_id %></p> 
       <a href="/travel-guide/<%= post.post_id %>">Read More</a> 
     </div>
   <% }); %>
-</div>
-
-<script>
-  function filterPosts(country) {
-    const posts = document.querySelectorAll('.blog-post');
-    posts.forEach(post => {
-      const postCountry = post.dataset.country;
-      if (country === 'All' || postCountry === country) {
-        post.style.display = 'block'; // Show the post
-      } else {
-        post.style.display = 'none'; // Hide the post
-      }
-    });
-  }
-</script>
