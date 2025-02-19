@@ -31,19 +31,31 @@ router.get('/', (req, res) => {
 
 
 
-router.get('/:postId', (req, res) => {
-  const postId = req.params.postId;
-  const sql = `SELECT * FROM blog_posts WHERE post_id = ${postId}`; // SQL with parameterization
+router.get('/:id', (req, res) => {
+  const postId = req.params.id;
+  let sql = `
+    SELECT bp.title, bp.content, bp.country, bpi.image_path, u.username,
+           group_concat(c.comment_text, '<br>') AS comments  -- Concatenate comments
+    FROM blog_posts AS bp
+    LEFT JOIN blog_post_images AS bpi ON bp.post_id = bpi.post_id
+    LEFT JOIN users AS u ON bp.user_id = u.user_id
+    LEFT JOIN blog_post_comments AS c ON bp.post_id = c.post_id
+    WHERE bp.post_id = ?
+    GROUP BY bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username`;
 
-  db.get(sql, (err, post) => { // Use db.get for single row result
-      if (err) {
-          console.error(err);
-          return res.status(500).send('Database error');
-      }
-      if (!post) {   // Handle case where no post is found
-          return res.status(404).render('guides-details.ejs', { post: null }); // Or redirect, as needed
-      }
+
+  
+
+  db.get(sql, [postId], (err, post) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Database error');
+    } else if (!post) {
+      // ... handle post not found
+    } else {
+      console.log(post.image_path);
       res.render('guides-details.ejs', { post: post });
+    }
   });
 });
 
