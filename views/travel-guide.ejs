@@ -13,7 +13,7 @@
       <h2><%= post.title %></h2>
       
       <p>Country: <%= post.country %></p> <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
-      <p>By User <%= post.user_id %></p> 
+      <p>By: <%= post.username || 'Anonymous' %> </p>
       <a href="/travel-guide/<%= post.post_id %>">Read More</a> 
     </div>
   <% }); %>
