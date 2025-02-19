@@ -8,18 +8,22 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
-        html, body{
-            height: 100%;
+        html, body {
             margin: 0;
             padding: 0;
         }
 
-        .wrapper{
+        /* Set background image inside wrapper */
+        .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 760px;
+            min-height: 100vh; /* Ensure full height */
+            background-size: 1920px 1080px; /* Ensure the whole image is visible */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent tiling */
+            background-attachment: fixed; /* Keep background still */
+            transition: background-image 1s ease-in-out;
         }
-
         .logo{
             width: 100px;
             height: 100px;
@@ -54,8 +58,17 @@
         .ft-container p{
             color: white;
         }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 30px;
+            width: 350px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
+
 <body>
 
   <!-- Header Section -->
@@ -110,5 +123,26 @@
 
   <!-- Bootstrap JS Bundle -->
   <script src="/js/bootstrap.min.js"></script>
+
+  <!-- Background Image Change Script -->
+  <script>
+    const images = [
+        "/images/p1.jpg",
+        "/images/p2.jpg",
+        "/images/p3.jpg"
+    ];
+    
+    let index = 0;
+    function changeBackground() {
+        document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
+        index = (index + 1) % images.length;
+    }
+
+    // Change background every 10 seconds
+    setInterval(changeBackground, 10000);
+
+    // Set initial background image
+    changeBackground();
+</script>
 </body>
 </html>
