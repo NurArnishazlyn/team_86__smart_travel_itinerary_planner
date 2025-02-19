@@ -128,5 +128,17 @@ WHERE title IN (
     'Island Hopping in Greece'
 );
 
+INSERT INTO blog_post_likes (post_id, user_id)
+SELECT bp.post_id, u.user_id
+FROM blog_posts AS bp, users AS u
+WHERE bp.title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+)
+AND u.username IN ('john_doe', 'jane_doe');
+
+
 
 COMMIT;

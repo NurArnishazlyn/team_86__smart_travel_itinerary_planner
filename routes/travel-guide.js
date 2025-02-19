@@ -3,10 +3,13 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   let sql = `
-    SELECT bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username 
+    SELECT bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username, COUNT(likes.user_id) AS like_count
     FROM blog_posts AS bp
     LEFT JOIN blog_post_images AS bpi ON bp.post_id = bpi.post_id
-    LEFT JOIN users AS u ON bp.user_id = u.user_id`; // Join with users table
+    LEFT JOIN users AS u ON bp.user_id = u.user_id
+    LEFT JOIN blog_post_likes AS likes ON bp.post_id = likes.post_id  -- Join with likes table
+    GROUP BY bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username`; // Group by post to count likes
+
 
   const country = req.query.country;
 
@@ -14,15 +17,15 @@ router.get('/', (req, res) => {
     sql += ` WHERE bp.country = '${country}'`;
   }
 
-  db.all(sql, (err, blogPosts) => {  //The blogPosts now include username
+  db.all(sql, (err, blogPosts) => { 
     if (err) {
       console.error(err);
       return res.status(500).send('Database error');
     }
-
     res.render('travel-guide.ejs', { blogPosts: blogPosts });
   });
 });
+
 
 
 router.get('/:postId', (req, res) => {
