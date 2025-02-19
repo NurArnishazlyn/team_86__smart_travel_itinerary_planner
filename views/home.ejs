@@ -68,8 +68,11 @@
             <div>
                 <button class="btn me-2 text-white">Guides</button>
                 <button class="btn me-2 text-white">Hotels</button>
-                <button class="btn text-white">Promotions</button>
-                <a href="/login" class="btn me-2 text-white">Login/Register</a>
+                <button class="btn me-2 text-white">Promotions</button>
+                <a href="<%= user ? '/logout' : '/login' %>" class="btn me-2 text-white">
+                    <%= user ? `Logout (${user.username})` : "Login / Register" %>
+                </a>
+                
             </div>
         </div>
     </div>

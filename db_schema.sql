@@ -6,8 +6,10 @@ BEGIN TRANSACTION;
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    full_name TEXT NOT NULL,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
+    phone TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -86,10 +88,10 @@ CREATE TABLE IF NOT EXISTS blog_post_comments (
 
 
 -- Insert default users
-INSERT INTO users (username, password) 
+INSERT INTO users (full_name, username, password, phone) 
 VALUES 
-    ('john_doe', 'hashed_password123'),
-    ('jane_doe', 'hashed_password456');
+    ('John Doe', 'john_doe', 'hashed_password123', '+6512345678'),
+    ('Jane Doe', 'jane_doe', 'hashed_password456', '+6523456789');
 
 -- Insert default email accounts
 INSERT INTO email_accounts (email_address, user_id) 

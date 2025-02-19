@@ -9,15 +9,20 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
         html, body{
-            height: 100%;
             margin: 0;
             padding: 0;
         }
 
-        .wrapper{
+        /* Set background image inside wrapper */
+        .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 760px;
+            min-height: 100vh; /* Ensure full height */
+            background-size: 1920px 1080px; /* Ensure the whole image is visible */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent tiling */
+            background-attachment: fixed; /* Keep background still */
+            transition: background-image 1s ease-in-out;
         }
 
         .logo{
@@ -81,17 +86,30 @@
                 <!-- Register Form -->
                 <form action="/register" method="POST">
                     <div class="mb-3">
+                        <input type="text" name="full_name" class="form-control" placeholder="Full Name" required>
+                    </div>
+                    <div class="mb-3">
                         <input type="text" name="username" class="form-control" placeholder="Username" required>
                     </div>
                     <div class="mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required>
+                    </div>
+                    <div class="mb-3">
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" name="confirm_password" class="form-control" placeholder=" Confirm Password" required>
                     </div>
                     <button type="submit" class="btn w-100 text-white">Register</button>
                 </form>
 
                 <!-- Login & Home Links -->
                 <div class="text-center mt-3">
-                  <small>Already have an account? <a href="/login" class="text-decoration-none">Login</a> | <a href="/" class="text-decoration-none">Home</a></small>
+                  <small>Already have an account? <a href="/login" class="text-decoration-none">Login</a></small></br> 
+                  <small><a href="/" class="text-decoration-none">Back to Home</a></small>
               </div>
             </div>
         </div>
@@ -110,7 +128,29 @@
         </div>
     </footer>
 
-  <!-- Bootstrap JS Bundle -->
-  <script src="/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS Bundle -->
+    <script src="/js/bootstrap.min.js"></script>
+
+    <!-- Background Image Change Script -->
+    <script>
+        const images = [
+            "/images/p1.jpg",
+            "/images/p2.jpg",
+            "/images/p3.jpg"
+        ];
+        
+        let index = 0;
+        function changeBackground() {
+            document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length;
+        }
+    
+        // Change background every 10 seconds
+        setInterval(changeBackground, 10000);
+    
+        // Set initial background image
+        changeBackground();
+    </script>
+    
 </body>
 </html>

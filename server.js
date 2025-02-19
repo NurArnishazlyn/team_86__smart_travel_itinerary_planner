@@ -29,6 +29,12 @@ app.use(
     })
 );
 
+// Make user available in all EJS templates
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 // Database Initialization
 const sqlite3 = require('sqlite3').verbose();
 global.db = new sqlite3.Database('./database.db',function(err){
@@ -41,21 +47,15 @@ global.db = new sqlite3.Database('./database.db',function(err){
     }
 });
 
-// Route Definitions
+// Home
 app.get('/', (req,res) => {
     res.render('home', {
         title: "Home",
-        welcomeMessage: 'Smart Travel Itinerary Planner',
-        roleOptions: [
-            {link: '/login', text: 'Login'},
-            {link: '/register', text: 'Register'}
-        ],
-        footerMessage: 'Created by Team 86',
-        currentYear: new Date().getFullYear(),
-        user: req.session.user // Make sure 'user' is passed to the view
+        user: req.session.user || null // Make sure 'user' is passed to the view
     });
 });
 
+// Manage Trips
 app.get('/manage-trips', (req,res) => {
     res.render("manage-trips");
 });
@@ -68,12 +68,15 @@ app.use('/login', loginRoutes);
 const registerRoutes = require('./routes/register');
 app.use('/register', registerRoutes);
 
+// Travel Guide
 const travelGuideRouter = require('./routes/travel-guide');
 app.use('/travel-guide', travelGuideRouter);
 
+// Deals/Promotions
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
 
+// Contact
 const contactRoutes = require('./routes/contact');
 app.use('/contact', contactRoutes);
 
@@ -86,6 +89,10 @@ app.get("/logout", (req, res) => {
         res.redirect("/"); // Redirect to the home page after logout
     });
 });
+
+// Forgot Password
+const forgotPasswordRoutes = require('./routes/forgot-password');
+app.use('/forgot-password', forgotPasswordRoutes);
 
 // 404 Catch-all for invalid routes
 app.use((req, res) => {
