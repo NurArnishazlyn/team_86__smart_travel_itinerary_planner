@@ -11,7 +11,7 @@
 <% blogPosts.forEach(post => { %>
     <div class="blog-post" data-country="<%= post.country %>">  
       <h2><%= post.title %></h2>
-      <p><%= post.content %></p>
+      
       <p>Country: <%= post.country %></p> <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
       <p>By User <%= post.user_id %></p> 
       <a href="/travel-guide/<%= post.post_id %>">Read More</a> 

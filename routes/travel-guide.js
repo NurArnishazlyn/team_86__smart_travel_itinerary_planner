@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  let sql = 'SELECT * FROM blog_posts';
-  const country = req.query.country; // Get the country from the query parameter
+  let sql = `
+    SELECT bp.post_id, bp.title, bp.content, bp.country, bpi.image_path
+    FROM blog_posts AS bp
+    LEFT JOIN blog_post_images AS bpi ON bp.post_id = bpi.post_id`; // Join with blog_post_images
 
-  if (country && country !== 'All') {  // Add filtering only if a country is selected and not 'All'
-    sql += ` WHERE country = '${country}'`;
+  const country = req.query.country;
+
+  if (country && country !== 'All') {
+    sql += ` WHERE bp.country = '${country}'`; // Filter by country if provided
   }
 
   db.all(sql, (err, blogPosts) => {
@@ -14,6 +18,7 @@ router.get('/', (req, res) => {
       console.error(err);
       return res.status(500).send('Database error');
     }
+
     res.render('travel-guide.ejs', { blogPosts: blogPosts });
   });
 });

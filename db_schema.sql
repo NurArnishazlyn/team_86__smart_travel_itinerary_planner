@@ -117,4 +117,16 @@ INSERT INTO blog_posts (user_id, title, content, country) VALUES
 (2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.', 'France'),
 (1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.', 'China'),
 (2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.', 'Singapore');
+
+INSERT INTO blog_post_images (post_id, image_path)
+SELECT post_id, 'images/travel-guide-demo.png'
+FROM blog_posts
+WHERE title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+);
+
+
 COMMIT;
