@@ -29,6 +29,12 @@ app.use(
     })
 );
 
+// Make user available in all EJS templates
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 // Database Initialization
 const sqlite3 = require('sqlite3').verbose();
 global.db = new sqlite3.Database('./database.db',function(err){

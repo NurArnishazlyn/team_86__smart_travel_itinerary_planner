@@ -56,8 +56,11 @@ router.post('/', (req, res) => {
                     return res.render('register', { title: 'Register', error: "User created, but email registration failed!" });
                 }
 
+                // Store user in session so they are logged in
+                req.session.user = { id: userId, username: username };
+
                 console.log("User registered successfully:", username);
-                res.redirect('/login'); // Redirect to login page after successful registration
+                res.redirect('/'); // Redirect user to home
             });
         });
     });
