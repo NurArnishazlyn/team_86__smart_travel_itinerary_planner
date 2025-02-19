@@ -139,6 +139,21 @@ WHERE bp.title IN (
 )
 AND u.username IN ('john_doe', 'jane_doe');
 
+INSERT INTO blog_post_comments (post_id, user_id, comment_text)
+SELECT bp.post_id, u.user_id, 
+       CASE 
+           WHEN u.username = 'john_doe' THEN 'John''s comment on ' || bp.title
+           ELSE 'Jane''s comment on ' || bp.title  -- When u.username = 'jane_doe'
+       END
+FROM blog_posts AS bp, users AS u
+WHERE bp.title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+)
+AND u.username IN ('john_doe', 'jane_doe');
+
 
 
 COMMIT;

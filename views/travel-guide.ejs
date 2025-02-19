@@ -15,6 +15,7 @@
       <p>Country: <%= post.country %></p> <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
       <p>By: <%= post.username || 'Anonymous' %> </p>
       <p><%= post.like_count || 0 %> Likes</p>
+      <p><%= post.comment_count || 0 %> Comments</p>
       <a href="/travel-guide/<%= post.post_id %>">Read More</a> 
     </div>
   <% }); %>
