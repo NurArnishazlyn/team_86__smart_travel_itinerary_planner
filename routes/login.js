@@ -27,7 +27,12 @@ router.post('/', (req, res) => {
         }
 
         // Store user session
-        req.session.user = user;
+        req.session.user = {
+            id: user.id,
+            username: user.username,
+            email: user.email
+        };
+        
         res.redirect('/'); // Redirect to the home page after successful login
     });
 });

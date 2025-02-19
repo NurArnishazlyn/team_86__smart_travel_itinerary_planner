@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 const bodyParser = require('body-parser');
 const path = require('path');
-const session = require('express-session');
+const session = require('express-session'); // Stores user data across different routes
 const engine = require('ejs-mate');
 
 // Middleware
@@ -26,10 +26,13 @@ app.use(
         secret: 'your_secret_key',
         resave: false,
         saveUninitialized: false,
+        cookie: { secure: false }
     })
 );
 
-// Make user available in all EJS templates
+// Middleware to store user in 'res.locals'
+// req.session.user: Stores the logged-in user
+// req.locals.user: Makes the user available in all views (EJS templates)
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
