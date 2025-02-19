@@ -69,7 +69,13 @@
                 <button class="btn me-2 text-white">Guides</button>
                 <button class="btn me-2 text-white">Hotels</button>
                 <button class="btn text-white">Promotions</button>
-                <a href="/login" class="btn me-2 text-white">Login/Register</a>
+                <% if (user) { %>
+                    <a href="/logout" class="btn me-2 text-white">Logout</a>
+                    <h3>Welcome <%= user.username %>!</h3>
+                <% } else { %>
+                    <a href="/login" class="btn me-2 text-white">Login</a>
+                    <a href="/register" class="btn me-2 text-white">Register</a>
+                <% } %>
             </div>
         </div>
     </div>

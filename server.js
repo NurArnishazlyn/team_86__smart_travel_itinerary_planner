@@ -41,21 +41,15 @@ global.db = new sqlite3.Database('./database.db',function(err){
     }
 });
 
-// Route Definitions
+// Home
 app.get('/', (req,res) => {
     res.render('home', {
         title: "Home",
-        welcomeMessage: 'Smart Travel Itinerary Planner',
-        roleOptions: [
-            {link: '/login', text: 'Login'},
-            {link: '/register', text: 'Register'}
-        ],
-        footerMessage: 'Created by Team 86',
-        currentYear: new Date().getFullYear(),
-        user: req.session.user // Make sure 'user' is passed to the view
+        user: req.session.user || null // Make sure 'user' is passed to the view
     });
 });
 
+// Manage Trips
 app.get('/manage-trips', (req,res) => {
     res.render("manage-trips");
 });
