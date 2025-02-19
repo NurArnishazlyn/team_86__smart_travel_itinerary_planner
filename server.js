@@ -68,12 +68,15 @@ app.use('/login', loginRoutes);
 const registerRoutes = require('./routes/register');
 app.use('/register', registerRoutes);
 
+// Travel Guide
 const travelGuideRouter = require('./routes/travel-guide');
 app.use('/travel-guide', travelGuideRouter);
 
+// Deals/Promotions
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
 
+// Contact
 const contactRoutes = require('./routes/contact');
 app.use('/contact', contactRoutes);
 
@@ -86,6 +89,10 @@ app.get("/logout", (req, res) => {
         res.redirect("/"); // Redirect to the home page after logout
     });
 });
+
+// Forgot Password
+const forgotPasswordRoutes = require('./routes/forgot-password');
+app.use('/forgot-password', forgotPasswordRoutes);
 
 // 404 Catch-all for invalid routes
 app.use((req, res) => {
