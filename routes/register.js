@@ -27,7 +27,7 @@ router.post('/', (req, res) => {
         }
 
         // Insert the new user into the database
-        db.run("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword], (err) => {
+        db.run("INSERT INTO users (fullName, username, email, password) VALUES (?, ?)", [username, hashedPassword], (err) => {
             if (err) {
                 return res.render('register', { title: 'Register', error: "Failed to register user!" });
             }

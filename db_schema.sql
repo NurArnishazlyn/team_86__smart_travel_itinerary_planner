@@ -1,120 +1,40 @@
--- Enable foreign key constraints
-PRAGMA foreign_keys = ON;
+// routes/register.js
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const router = express.Router();
 
-BEGIN TRANSACTION;
+// Register Page (GET Request)
+router.get('/', (req, res) => {
+    res.render('register', {
+        title: 'Register',
+        error: null // To pass any error message if there is one
+    });
+});
 
--- Users Table
-CREATE TABLE IF NOT EXISTS users (
-    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+// Handle Register Form Submission (POST Request)
+router.post('/', (req, res) => {
+    const { fullName, username, password, phone } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10); // Hash the password before saving to DB
 
--- Email Accounts Table
-CREATE TABLE IF NOT EXISTS email_accounts (
-    email_account_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email_address TEXT NOT NULL UNIQUE,
-    user_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+    // Check if the username already exists in the database
+    db.get("SELECT * FROM users WHERE username = ?", [username], (err, user) => {
+        if (err) {
+            return res.render('register', { title: 'Register', error: "Database error!" });
+        }
 
--- Itineraries Table
-CREATE TABLE IF NOT EXISTS itineraries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
+        if (user) {
+            return res.render('register', { title: 'Register', error: "Username already exists!" });
+        }
 
--- Activities Table
-CREATE TABLE IF NOT EXISTS activities (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    itinerary_id INTEGER NOT NULL,
-    activity_name TEXT NOT NULL,
-    activity_date DATETIME NOT NULL,
-    location TEXT,
-    notes TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (itinerary_id) REFERENCES itineraries(id) ON DELETE CASCADE
-);
+        // Insert the new user into the database
+        db.run("INSERT INTO users (full_name, username, password, phone) VALUES (?, ?, ?, ?)", 
+            [fullName, username, hashedPassword, phone], (err) => {
+            if (err) {
+                return res.render('register', { title: 'Register', error: "Failed to register user!" });
+            }
+            res.redirect('/login'); // Redirect to login page after successful registration
+        });
+    });
+});
 
--- travel guides
-CREATE TABLE IF NOT EXISTS blog_posts (
-    post_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,  -- Author of the blog post
-    title TEXT NOT NULL,
-    content TEXT,
-    country TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS blog_post_images (
-    image_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id INTEGER NOT NULL,
-    image_path TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES blog_posts(post_id) ON DELETE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS blog_post_likes (
-    like_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL, -- User who liked the post
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES blog_posts(post_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    UNIQUE(post_id, user_id) -- Prevents a user from liking the same post multiple times
-);
-
-CREATE TABLE IF NOT EXISTS blog_post_comments (
-    comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    post_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL, -- User who made the comment
-    comment_text TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (post_id) REFERENCES blog_posts(post_id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-
-
--- Insert default users
-INSERT INTO users (username, password) 
-VALUES 
-    ('john_doe', 'hashed_password123'),
-    ('jane_doe', 'hashed_password456');
-
--- Insert default email accounts
-INSERT INTO email_accounts (email_address, user_id) 
-VALUES 
-    ('john.doe@example.com', 1),
-    ('jane.doe@example.com', 2);
-
--- Insert default itineraries
-INSERT INTO itineraries (user_id, title, description, start_date, end_date) 
-VALUES 
-    (1, 'Summer Vacation in Italy', 'Explore Rome, Venice, and Florence', '2025-06-15', '2025-06-30'),
-    (2, 'Weekend Getaway', 'Relaxing weekend in the mountains', '2025-07-20', '2025-07-22');
-
--- Insert default activities
-INSERT INTO activities (itinerary_id, activity_name, activity_date, location, notes) 
-VALUES 
-    (1, 'Visit the Colosseum', '2025-06-16 10:00:00', 'Rome, Italy', 'Buy tickets in advance'),
-    (1, 'Wine Tasting Tour', '2025-06-18 14:00:00', 'Tuscany, Italy', 'Don’t forget to book a driver.'),
-    (2, 'Hike the Blue Ridge Trail', '2025-07-21 08:00:00', 'Blue Ridge Mountains, USA', 'Pack water and snacks');
-
-
--- Insert demo data into blog_posts
-INSERT INTO blog_posts (user_id, title, content, country) VALUES
-(1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.', 'Japan'),
-(2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.', 'France'),
-(1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.', 'China'),
-(2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.', 'Singapore');
-COMMIT;
+module.exports = router;
