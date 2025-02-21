@@ -48,34 +48,3 @@ nav ul li a:hover {
     background-color: #575757;
     border-radius: 5px;
 }
-
-/* Carousel Styles */
-.carousel {
-    margin: 20px auto;            /* Center the carousel with margins */
-    width: 80%;                   /* Set carousel width */
-    max-width: 1000px;            /* Limit maximum width */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add shadow around carousel */
-    border-radius: 8px;           /* Add rounded corners */
-    overflow: hidden;             /* Ensure corners are rounded properly */
-}
-
-.carousel img {
-    height: 500px;                /* Fixed height for images */
-    object-fit: cover;            /* Ensure images cover the carousel area */
-    border-radius: 8px;           /* Rounded corners for images */
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
-    border-radius: 50%;                   /* Round icons */
-    padding: 10px;                         /* Add padding around icons */
-}
-
-#map {
-    height: 500px;
-    width: 80%;
-    margin: 20px auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
