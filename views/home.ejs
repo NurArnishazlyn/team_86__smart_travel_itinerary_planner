@@ -184,8 +184,6 @@
 
 <script>
     function initMap() {
-        const defaultLocation = { lat: 1.3296264435641412, lng: 103.77615303838034 }; // SIM Education
-
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
@@ -194,45 +192,37 @@
                         lng: position.coords.longitude
                     };
 
-                    // Initialize the map centered at user's location
+                    // Initialize the map with a valid Map ID
                     const map = new google.maps.Map(document.getElementById("map"), {
                         center: userLocation,
                         zoom: 14,
+                        mapId: "79ec1218f1f43c89" // Use your actual Map ID
                     });
 
-                    // Add a marker at user's location
-                    new google.maps.Marker({
-                        position: userLocation,
-                        map: map,
-                        title: "You are here!",
-                    });
+                    // Ensure AdvancedMarkerElement is available
+                    if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                        new google.maps.marker.AdvancedMarkerElement({
+                            position: userLocation,
+                            map: map,
+                            title: "You are here!",
+                        });
+                    } else {
+                        console.error("AdvancedMarkerElement is not available.");
+                    }
                 },
-                () => {
-                    // Fallback to default location (SIM Education)
-                    loadDefaultMap();
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    alert("Geolocation permission denied. Unable to fetch location.");
                 }
             );
         } else {
-            alert("Geolocation is not supported by your browser. Showing default location.");
-            loadDefaultMap();
-        }
-
-        function loadDefaultMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
-                center: defaultLocation,
-                zoom: 14,
-            });
-
-            new google.maps.Marker({
-                position: defaultLocation,
-                map: map,
-                title: "SIM Education",
-            });
+            alert("Geolocation is not supported by your browser.");
         }
     }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw6cScfzxTmRJPD5PX_J3TKzUypYw_JXU&callback=initMap&libraries=marker" async defer></script>
+<!-- Load Google Maps API Asynchronously (Best Practice) -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw6cScfzxTmRJPD5PX_J3TKzUypYw_JXU&callback=initMap&libraries=marker"></script>
 
     <!-- Footer Section -->
     <footer class="footer p-3 border-top">
