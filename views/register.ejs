@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="/css/main.css">
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         html, body{
             margin: 0;
@@ -17,11 +18,11 @@
         .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure full height */
-            background-size: 1920px 1080px; /* Ensure the whole image is visible */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Prevent tiling */
-            background-attachment: fixed; /* Keep background still */
+            min-height: 100vh; 
+            background-size: 1920px 1080px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
             transition: background-image 1s ease-in-out;
         }
 
@@ -62,7 +63,6 @@
     </style>
 </head>
 <body>
-
     <!-- Header Section -->
     <div class="wrapper">
         <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
@@ -84,25 +84,34 @@
                 <% } %>
 
                 <!-- Register Form -->
-                <form action="/register" method="POST">
+                <form id="register-form" action="/register" method="POST">
+
                     <div class="mb-3">
                         <input type="text" name="full_name" class="form-control" placeholder="Full Name" required>
                     </div>
+
                     <div class="mb-3">
                         <input type="text" name="username" class="form-control" placeholder="Username" required>
                     </div>
+
                     <div class="mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email" required>
                     </div>
+
                     <div class="mb-3">
                         <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required>
                     </div>
-                    <div class="mb-3">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+
+                    <div class="mb-3 position-relative">
+                        <input type="password" id="newPassword" name="password" class="form-control" placeholder="Password" required>
+                        <i class="bi bi-eye-slash" id="toggle-password" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></i>
                     </div>
-                    <div class="mb-3">
-                        <input type="password" name="confirm_password" class="form-control" placeholder=" Confirm Password" required>
+
+                    <div class="mb-3 position-relative">
+                        <input type="password" id="confirmPassword" name="confirm_password" class="form-control" placeholder=" Confirm Password" required>
+                        <i class="bi bi-eye-slash" id="toggle-confirm-password" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></i>
                     </div>
+
                     <button type="submit" class="btn w-100 text-white">Sign Up</button>
                 </form>
 
@@ -133,6 +142,38 @@
 
     <!-- Background Image Change Script -->
     <script>
+        document.getElementById("toggle-password").addEventListener("click", function () {
+            const passwordField = document.getElementById("newPassword");
+            const eyeIcon = document.getElementById("toggle-password");
+
+            // Toggle the type of the password field
+            if (passwordField.type === "password") {
+                passwordField.type = "text"; // Show password
+                eyeIcon.classList.remove("bi-eye-slash");
+                eyeIcon.classList.add("bi-eye"); // Change icon to eye
+            } else {
+                passwordField.type = "password"; // Hide password
+                eyeIcon.classList.remove("bi-eye");
+                eyeIcon.classList.add("bi-eye-slash"); // Change icon to eye-slash
+            }
+        });
+
+        document.getElementById("toggle-confirm-password").addEventListener("click", function () {
+            const passwordField = document.getElementById("confirmPassword");
+            const eyeIcon = document.getElementById("toggle-confirm-password");
+
+            // Toggle the type of the password field
+            if (passwordField.type === "password") {
+                passwordField.type = "text"; // Show password
+                eyeIcon.classList.remove("bi-eye-slash");
+                eyeIcon.classList.add("bi-eye"); // Change icon to eye
+            } else {
+                passwordField.type = "password"; // Hide password
+                eyeIcon.classList.remove("bi-eye");
+                eyeIcon.classList.add("bi-eye-slash"); // Change icon to eye-slash
+            }
+        });
+
         const images = [
             "/images/p1.jpg",
             "/images/p2.jpg",

@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="/css/main.css">
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         html, body {
             margin: 0;
@@ -17,11 +18,11 @@
         .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure full height */
-            background-size: 1920px 1080px; /* Ensure the whole image is visible */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Prevent tiling */
-            background-attachment: fixed; /* Keep background still */
+            min-height: 100vh;
+            background-size: 1920px 1080px;
+            background-position: center; 
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             transition: background-image 1s ease-in-out;
         }
         .logo{
@@ -70,81 +71,100 @@
 </head>
 
 <body>
-
-  <!-- Header Section -->
-  <div class="wrapper">
-    <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
-      <a href="/">
-        <img src="/images/logo.png" alt="Logo" class="logo">
-      </a>
-    </div>
-
-    <!-- Login Section -->
-    <div class="d-flex justify-content-center align-items-center min-vh-100">
-      <div class="card p-4 shadow-lg" style="width: 350px;">
-          <h2 class="text-center mb-3">Login</h2>
-
-          <!-- Error Message -->
-          <% if (error) { %>
-              <div class="alert alert-danger text-center p-2">
-                  <%= error %>
-              </div>
-          <% } %>
-
-          <!-- Login Form -->
-          <form action="/login" method="POST">
-              <div class="mb-3">
-                  <input type="text" name="username" class="form-control" placeholder="Username" required>
-              </div>
-              <div class="mb-3">
-                  <input type="password" name="password" class="form-control" placeholder="Password" required>
-              </div>
-              <button type="submit" class="btn w-100 text-white">Login</button>
-          </form>
-
-        <!-- Register & Home Links -->
-        <div class="text-center mt-3">
-            <small><a href="/forgot-password" class="text-decoration-none text-primary">Forgot password?</a></small></br></br>
-            <small>Don't have an account? <a href="/register" class="text-decoration-none text-primary">Sign Up</a></small></br>
-            <small><a href="/" class="text-decoration-none text-primary">Back to Home</a></small>
+    <!-- Header Section -->
+    <div class="wrapper">
+        <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </a>
         </div>
-      </div>
-  </div>
 
-  <!-- Footer Section -->
-  <footer class="footer p-3 border-top">
-    <div class="ft-container text-center">
-        <p>&copy; 2025 Travel Itinerary Planner from Team 86. All Rights Reserverd</p>
-        <div class="d-flex justify-content-center">
-            <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
-            <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
-            <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
+        <!-- Login Section -->
+        <div class="d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card p-4 shadow-lg" style="width: 350px;">
+            <h2 class="text-center mb-3">Login</h2>
+
+            <!-- Error Message -->
+            <% if (error) { %>
+                <div class="alert alert-danger text-center p-2">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <!-- Login Form -->
+            <form id="login-form" action="/login" method="POST">
+
+                <div class="mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                </div>
+
+                <div class="mb-3 position-relative">
+                    <input type="password" id="loginPassword" name="password" class="form-control" placeholder="Password" required>
+                    <i class="bi bi-eye-slash" id="toggle-password" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></i>
+                    </div>
+
+                <button type="submit" class="btn w-100 text-white">Login</button>
+            </form>
+
+            <!-- Register & Home Links -->
+            <div class="text-center mt-3">
+                <small><a href="/forgot-password" class="text-decoration-none text-primary">Forgot password?</a></small></br></br>
+                <small>Don't have an account? <a href="/register" class="text-decoration-none text-primary">Sign Up</a></small></br>
+                <small><a href="/" class="text-decoration-none text-primary">Back to Home</a></small>
+            </div>
         </div>
     </div>
-  </footer>
 
-  <!-- Bootstrap JS Bundle -->
-  <script src="/js/bootstrap.min.js"></script>
+    <!-- Footer Section -->
+    <footer class="footer p-3 border-top">
+        <div class="ft-container text-center">
+            <p>&copy; 2025 Travel Itinerary Planner from Team 86. All Rights Reserverd</p>
+            <div class="d-flex justify-content-center">
+                <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
+                <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
+                <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
+            </div>
+        </div>
+    </footer>
 
-  <!-- Background Image Change Script -->
-  <script>
-    const images = [
-        "/images/p1.jpg",
-        "/images/p2.jpg",
-        "/images/p3.jpg"
-    ];
-    
-    let index = 0;
-    function changeBackground() {
-        document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
-        index = (index + 1) % images.length;
-    }
+    <!-- Bootstrap JS Bundle -->
+    <script src="/js/bootstrap.min.js"></script>
 
-    // Change background every 10 seconds
-    setInterval(changeBackground, 10000);
+    <!-- Background Image Change Script -->
+    <script>
+        document.getElementById("toggle-password").addEventListener("click", function () {
+            const passwordField = document.getElementById("loginPassword");
+            const eyeIcon = document.getElementById("toggle-password");
 
-    // Set initial background image
-    changeBackground();
-</script>
+            // Toggle the type of the password field
+            if (passwordField.type === "password") {
+                passwordField.type = "text"; // Show password
+                eyeIcon.classList.remove("bi-eye-slash");
+                eyeIcon.classList.add("bi-eye"); // Change icon to eye
+            } else {
+                passwordField.type = "password"; // Hide password
+                eyeIcon.classList.remove("bi-eye");
+                eyeIcon.classList.add("bi-eye-slash"); // Change icon to eye-slash
+            }
+        });
+
+        const images = [
+            "/images/p1.jpg",
+            "/images/p2.jpg",
+            "/images/p3.jpg"
+        ];
+        
+        let index = 0;
+        function changeBackground() {
+            document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
+            index = (index + 1) % images.length;
+        }
+
+        // Change background every 10 seconds
+        setInterval(changeBackground, 10000);
+
+        // Set initial background image
+        changeBackground();
+    </script>
 </body>
 </html>
