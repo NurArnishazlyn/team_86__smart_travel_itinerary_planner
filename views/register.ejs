@@ -160,7 +160,9 @@
             const successMsg = document.getElementById("success-message");
     
             // Function to validate form input
-            async function validateForm(event) {
+            function validateForm(event) {
+                event.preventDefault();
+
                 const username = document.getElementById("username").value;
                 const email = document.getElementById("email").value;
                 const phone = document.getElementById("phone").value;
@@ -177,29 +179,37 @@
                 // Validate Email
                 if (!emailRegex.test(email)) {
                     showError("Invalid email format!");
-                    return;
+                    return false;
                 }
 
                 // Validate Phone Number
                 if (!phoneRegex.test(phone)) {
                     showError("Invalid phone number format!");
-                    return;
+                    return false;
                 }
     
                 // Validate Password
                 if (!passwordRegex.test(password)) {
                     showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
-                    return;
+                    return false;
                 }
     
                 // Validate Passwords Match
                 if (password !== confirmPassword) {
                     showError("Passwords do not match!");
-                    return;
+                    return false;
                 }
 
                 // If all validations pass, show success message
                 showSuccess("Registration successful! You can now log in.");
+                return true;
+
+                // Attach form validation to form submission
+                document.getElementById("register-form").addEventListener("submit", function (event) {
+                    if(!validateForm(event)) {
+                        return false;
+                    }
+                });
             }
     
             // Display error message
@@ -213,12 +223,6 @@
                 successMsg.innerHTML = message;
                 successMsg.classList.remove("d-none");
             }
-    
-            // Attach form validation to form submission
-            document.getElementById("register-form").addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent actual form submission for demo purposes
-                validateForm(event);
-            });
     
             // Toggle Password Visibility
             function togglePasswordVisibility(inputId, iconId) {
