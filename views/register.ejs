@@ -158,24 +158,21 @@
             const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
             const errorMsg = document.getElementById("error-message");
             const successMsg = document.getElementById("success-message");
-    
+
             // Function to validate form input
             function validateForm(event) {
-                event.preventDefault();
+                event.preventDefault(); // Prevent form submission until validation passes
 
                 const username = document.getElementById("username").value;
                 const email = document.getElementById("email").value;
                 const phone = document.getElementById("phone").value;
                 const password = document.getElementById("newPassword").value;
                 const confirmPassword = document.getElementById("confirmPassword").value;
-    
+
                 // Clear previous error message
                 errorMsg.classList.add("d-none");
                 successMsg.classList.add("d-none");
 
-                // Check if the username exists
-
-    
                 // Validate Email
                 if (!emailRegex.test(email)) {
                     showError("Invalid email format!");
@@ -187,13 +184,13 @@
                     showError("Invalid phone number format!");
                     return false;
                 }
-    
+
                 // Validate Password
                 if (!passwordRegex.test(password)) {
                     showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
                     return false;
                 }
-    
+
                 // Validate Passwords Match
                 if (password !== confirmPassword) {
                     showError("Passwords do not match!");
@@ -204,14 +201,16 @@
                 showSuccess("Registration successful! You can now log in.");
                 return true;
 
-                // Attach form validation to form submission
-                document.getElementById("register-form").addEventListener("submit", function (event) {
-                    if(!validateForm(event)) {
-                        return false;
-                    }
-                });
+                
+                // // Attach form validation to form submission
+                // document.getElementById("register-form").addEventListener("submit", function (event) {
+                //     if (!validateForm(event)) {
+                //         return false; // Prevent form submission if validation fails
+                //     }
+                //     // Form will submit if validation passes
+                // });
             }
-    
+
             // Display error message
             function showError(message) {
                 errorMsg.innerHTML = message;
@@ -223,42 +222,41 @@
                 successMsg.innerHTML = message;
                 successMsg.classList.remove("d-none");
             }
-    
+
             // Toggle Password Visibility
             function togglePasswordVisibility(inputId, iconId) {
                 const passwordField = document.getElementById(inputId);
                 const eyeIcon = document.getElementById(iconId);
-    
+
                 const isPassword = passwordField.type === "password";
                 passwordField.type = isPassword ? "text" : "password";
                 eyeIcon.classList.toggle("bi-eye-slash", isPassword);
                 eyeIcon.classList.toggle("bi-eye", !isPassword);
             }
-    
+
             // Attach event listeners to toggle password visibility
             document.getElementById("toggle-password").addEventListener("click", function () {
                 togglePasswordVisibility("newPassword", "toggle-password");
             });
-    
+
             document.getElementById("toggle-confirm-password").addEventListener("click", function () {
                 togglePasswordVisibility("confirmPassword", "toggle-confirm-password");
             });
-    
+
             // Background image array
             const images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"];
             let index = 0;
-    
+
             // Function to change background image
             function changeBackground() {
                 document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
                 index = (index + 1) % images.length;
             }
-    
+
             // Change background every 10 seconds
             setInterval(changeBackground, 10000);
             changeBackground();  // Set initial background image
         });
-    </script>
-        
+    </script>        
 </body>
 </html>
