@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
       console.error(err);
       return res.status(500).send('Database error');
     }
-    res.render('travel-guide.ejs', { blogPosts: blogPosts });
+    res.render('travel-guide.ejs', { blogPosts: blogPosts, user: req.session.user });
   });
 });
 
@@ -54,7 +54,7 @@ router.get('/:id', (req, res) => {
       // ... handle post not found
     } else {
       console.log(post.image_path);
-      res.render('guides-details.ejs', { post: post });
+      res.render('guides-details.ejs', { post: post, user: req.session.user });
     }
   });
 });
