@@ -78,6 +78,17 @@
             height: 100px;
             border-radius: 50%;
         }
+        .like-button{
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            margin-right: 5px;
+        }
+        .like-button i{
+            font-size: 1.2rem;
+        }
+
     </style>
 </head>
 <body>
@@ -105,18 +116,26 @@
       <button onclick="filterPosts('Singapore')">Singapore</button>
       <button onclick="filterPosts('All')">All</button> </div>
 
-    <div id="blog-posts-container">
-    <% blogPosts.forEach(post => { %>
-        <div class="blog-post" data-country="<%= post.country %>">  
-          <h2><%= post.title %></h2>
-          
-          <p>Country: <%= post.country %></p> <% if (post.image_path) { %> <img src="<%= post.image_path %>" alt="<%= post.title %>"> <% } %>
-          <p>By: <%= post.username || 'Anonymous' %> </p>
-          <p><%= post.like_count || 0 %> Likes</p>
-          <p><%= post.comment_count || 0 %> Comments</p>
-          <a href="/travel-guide/<%= post.post_id %>">Read More</a> 
-        </div>
-      <% }); %>
+      <div id="blog-posts-container">
+        <% blogPosts.forEach(post => { %>
+            <div class="blog-post" data-country="<%= post.country %>">
+                <h2><%= post.title %></h2>
+
+                <p>Country: <%= post.country %></p>
+                <% if (post.image_path) { %>
+                    <img src="<%= post.image_path %>" alt="<%= post.title %>">
+                <% } %>
+                <p>By: <%= post.username || 'Anonymous' %></p>
+                <div class="d-flex align-items-center">
+                    <button class="like-button" data-post-id="<%= post.post_id %>" onclick="likePost(this, '<%= post.post_id %>')">
+                        <i class="bi <%= post.liked ? 'bi-heart-fill' : 'bi-heart' %>" style="<%= post.liked ? 'color: red;' : '' %>"></i>
+                    </button>
+                    <p class="likes-count" id="likes-count-<%= post.post_id %>"><%= post.like_count || 0 %> Likes</p>
+                </div>
+                <p><%= post.comment_count || 0 %> Comments</p>
+                <a href="/travel-guide/<%= post.post_id %>">Read More</a>
+            </div>
+        <% }); %>
     </div>
 
     <script>
@@ -131,6 +150,37 @@
           }
         });
       }
+
+      async function likePost(button, postId) {
+          postId = parseInt(postId);  
+          const response = await fetch(`/travel-guide/${postId}/like`, {
+            method: 'POST',
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const likesCountElement = document.getElementById(`likes-count-${postId}`);
+            const currentLikes = parseInt(likesCountElement.textContent.split(' ')[0]);
+
+            // Update the like count based on whether the post was liked or unliked
+            const newLikes = data.liked ? currentLikes + 1 : currentLikes - 1;
+            likesCountElement.textContent = `${newLikes} Likes`;
+
+             // Update the heart icon based on whether the post was liked or unliked
+            const heartIcon = button.querySelector('i');
+            if (data.liked) {
+                heartIcon.classList.add('bi-heart-fill');
+                heartIcon.classList.remove('bi-heart');
+                heartIcon.style.color = 'red';
+            } else {
+                heartIcon.classList.remove('bi-heart-fill');
+                heartIcon.classList.add('bi-heart');
+                heartIcon.style.color = '';
+            }
+          } else {
+            console.error('Failed to like/unlike post:', response.status);
+          }
+        }
     </script>
     <!-- Bootstrap JS Bundle -->
     <script src="/js/bootstrap.min.js"></script>
