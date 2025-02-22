@@ -5,23 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="/css/main.css">
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         html, body{
             margin: 0;
             padding: 0;
         }
 
+        input:focus {
+            border-color: #ff0066;
+            transition: border-color 0.3s ease-in-out;
+        }
+
         /* Set background image inside wrapper */
         .wrapper {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Ensure full height */
-            background-size: 1920px 1080px; /* Ensure the whole image is visible */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Prevent tiling */
-            background-attachment: fixed; /* Keep background still */
+            min-height: 100vh; 
+            background-size: 1920px 1080px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
             transition: background-image 1s ease-in-out;
         }
 
@@ -62,7 +68,6 @@
     </style>
 </head>
 <body>
-
     <!-- Header Section -->
     <div class="wrapper">
         <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
@@ -76,34 +81,48 @@
             <div class="card p-4 shadow-lg" style="width: 350px;">
                 <h2 class="text-center mb-3">Sign Up</h2>
 
-                <!-- Error Message -->
-                <% if (error) { %>
-                    <div class="alert alert-danger text-center p-2">
-                        <%= error %>
-                    </div>
-                <% } %>
+                <!-- Success & Error Message -->
+                <div id="error-message" class="alert alert-danger text-center d-none mt-3"></div>
+                <div id="success-message" class="alert alert-success text-center d-none mt-3"></div>
 
                 <!-- Register Form -->
-                <form action="/register" method="POST">
+                <form id="register-form" action="/register" method="POST">
+
                     <div class="mb-3">
-                        <input type="text" name="full_name" class="form-control" placeholder="Full Name" required>
+                        <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Full Name" required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Email" required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="tel" name="phone" class="form-control" placeholder="Phone Number" required>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" required>
                     </div>
-                    <div class="mb-3">
-                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+
+                    <div class="mb-3 position-relative">
+                        <input type="password" id="newPassword" name="password" class="form-control" placeholder="Password" required>
+                        <i class="bi bi-eye-slash" id="toggle-password" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></i>
                     </div>
-                    <div class="mb-3">
-                        <input type="password" name="confirm_password" class="form-control" placeholder=" Confirm Password" required>
+
+                    <div class="mb-3 position-relative">
+                        <input type="password" id="confirmPassword" name="confirm_password" class="form-control" placeholder=" Confirm Password" required>
+                        <i class="bi bi-eye-slash" id="toggle-confirm-password" style="position: absolute; right: 10px; top: 10px; cursor: pointer;"></i>
                     </div>
-                    <button type="submit" class="btn w-100 text-white">Sign Up</button>
+
+                    <!-- Terms and Condition Checkbox: -->
+                    <div class="text-center mb-3">
+                        <small>
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="/terms" target="_blank">Terms and Conditions</a></label>
+                        </small>
+                    </div>
+                    
+                    <button type="submit" id="register-btn" class="btn w-100 text-white">Sign Up</button>
                 </form>
 
                 <!-- Login & Home Links -->
@@ -131,26 +150,113 @@
     <!-- Bootstrap JS Bundle -->
     <script src="/js/bootstrap.min.js"></script>
 
-    <!-- Background Image Change Script -->
+    <!-- JavaScript Logic -->
     <script>
-        const images = [
-            "/images/p1.jpg",
-            "/images/p2.jpg",
-            "/images/p3.jpg"
-        ];
-        
-        let index = 0;
-        function changeBackground() {
-            document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
-            index = (index + 1) % images.length;
-        }
-    
-        // Change background every 10 seconds
-        setInterval(changeBackground, 10000);
-    
-        // Set initial background image
-        changeBackground();
-    </script>
-    
+        document.addEventListener("DOMContentLoaded", function () {
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+            const errorMsg = document.getElementById("error-message");
+            const successMsg = document.getElementById("success-message");
+
+            // Function to validate form input
+            function validateForm(event) {
+                event.preventDefault(); // Prevent form submission until validation passes
+
+                const username = document.getElementById("username").value;
+                const email = document.getElementById("email").value;
+                const phone = document.getElementById("phone").value;
+                const password = document.getElementById("newPassword").value;
+                const confirmPassword = document.getElementById("confirmPassword").value;
+
+                // Clear previous error message
+                errorMsg.classList.add("d-none");
+                successMsg.classList.add("d-none");
+
+                // Validate Email
+                if (!emailRegex.test(email)) {
+                    showError("Invalid email format!");
+                    return false;
+                }
+
+                // Validate Phone Number
+                if (!phoneRegex.test(phone)) {
+                    showError("Invalid phone number format!");
+                    return false;
+                }
+
+                // Validate Password
+                if (!passwordRegex.test(password)) {
+                    showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
+                    return false;
+                }
+
+                // Validate Passwords Match
+                if (password !== confirmPassword) {
+                    showError("Passwords do not match!");
+                    return false;
+                }
+
+                // If all validations pass, show success message
+                showSuccess("Registration successful! You can now log in.");
+                return true;
+
+                
+                // // Attach form validation to form submission
+                // document.getElementById("register-form").addEventListener("submit", function (event) {
+                //     if (!validateForm(event)) {
+                //         return false; // Prevent form submission if validation fails
+                //     }
+                //     // Form will submit if validation passes
+                // });
+            }
+
+            // Display error message
+            function showError(message) {
+                errorMsg.innerHTML = message;
+                errorMsg.classList.remove("d-none");
+            }
+
+            // Display success message
+            function showSuccess(message) {
+                successMsg.innerHTML = message;
+                successMsg.classList.remove("d-none");
+            }
+
+            // Toggle Password Visibility
+            function togglePasswordVisibility(inputId, iconId) {
+                const passwordField = document.getElementById(inputId);
+                const eyeIcon = document.getElementById(iconId);
+
+                const isPassword = passwordField.type === "password";
+                passwordField.type = isPassword ? "text" : "password";
+                eyeIcon.classList.toggle("bi-eye-slash", isPassword);
+                eyeIcon.classList.toggle("bi-eye", !isPassword);
+            }
+
+            // Attach event listeners to toggle password visibility
+            document.getElementById("toggle-password").addEventListener("click", function () {
+                togglePasswordVisibility("newPassword", "toggle-password");
+            });
+
+            document.getElementById("toggle-confirm-password").addEventListener("click", function () {
+                togglePasswordVisibility("confirmPassword", "toggle-confirm-password");
+            });
+
+            // Background image array
+            const images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"];
+            let index = 0;
+
+            // Function to change background image
+            function changeBackground() {
+                document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
+                index = (index + 1) % images.length;
+            }
+
+            // Change background every 10 seconds
+            setInterval(changeBackground, 10000);
+            changeBackground();  // Set initial background image
+        });
+    </script>        
 </body>
 </html>

@@ -12,19 +12,20 @@ router.get('/', (req, res) => {
 
 // Handle Register Form Submission (POST Request)
 router.post('/', (req, res) => {
-    const { full_name, username, email, phone, password } = req.body;
+    const { full_name, username, email, phone, password, confirm_password } = req.body;
 
     // Check if all required fields are provided
-    if (!full_name || !username || !email || !phone || !password) {
+    if (!full_name || !username || !email || !phone || !password || !confirm_password) {
         return res.render('register', { title: 'Register', error: "All fields are required!" });
     }
 
     // Check if passwords match
-    if (password !== req.body.confirm_password) {
+    if (password !== confirm_password) {
         return res.render('register', { title: 'Register', error: "Passwords do not match!" });
-    }    
+    }
 
-    const hashedPassword = bcrypt.hashSync(password, 10); // Hash the password before saving to DB
+    // Hash the password before saving to DB
+    const hashedPassword = bcrypt.hashSync(password, 10); 
 
     // Check if the username already exists
     db.get("SELECT * FROM users WHERE username = ?", [username], (err, user) => {
