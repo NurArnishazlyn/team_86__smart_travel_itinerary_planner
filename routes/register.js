@@ -11,7 +11,7 @@ const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
 router.get('/', (req, res) => {
     res.render('register', {
         title: 'Register',
-        error: null // To pass any error message if there is one
+        error: null // Pass any error message if there is one
     });
 });
 
@@ -43,7 +43,7 @@ router.post('/', (req, res) => {
     if (!passwordRegex.test(password)) {
         return res.render('register', {
             title: 'Register',
-            error: "Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&) "
+            error: "Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)"
         });
     }
 
@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
     // Hash the password before saving to DB
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    // Check if the username already exists in the database
+    // Check if the username already exists
     db.get("SELECT * FROM users WHERE username = ?", [username], (err, user) => {
         if (err) {
             return res.render('register', { title: 'Register', error: "Database error!" });
@@ -66,12 +66,13 @@ router.post('/', (req, res) => {
         }
 
         // Insert the new user into the database
-        db.run("INSERT INTO users (full_name, username, password, phone) VALUES (?, ?, ?, ?)", [full_name, username, hashedPassword, phone], function (err) {
+        const insertUserQuery = "INSERT INTO users (full_name, username, password, phone) VALUES (?, ?, ?, ?)";
+        db.run(insertUserQuery, [full_name, username, hashedPassword, phone], function (err) {
             if (err) {
                 return res.render('register', { title: 'Register', error: "Failed to register user!" });
             }
 
-            const userId = this.lastID; // Get the user_id of the newly inserted user
+            const userId = this.lastID; // Get the last inserted user ID
 
             // Insert email into email_accounts table
             const insertEmailQuery = "INSERT INTO email_accounts (email_address, user_id) VALUES (?, ?)";
@@ -84,7 +85,7 @@ router.post('/', (req, res) => {
                 // Store user in session so they are logged in
                 req.session.user = { id: userId, username: username };
 
-                // Redirect user to home page
+                // Redirect user to login page
                 res.redirect('/login');
             });
         });

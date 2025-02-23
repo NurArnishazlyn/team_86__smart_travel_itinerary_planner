@@ -1,5 +1,5 @@
 /**
-* index.js
+* server.js
 * This is your main app entry point
 */
 
@@ -40,13 +40,19 @@ app.use((req, res, next) => {
 
 // Database Initialization
 const sqlite3 = require('sqlite3').verbose();
-global.db = new sqlite3.Database('./database.db',function(err){
-    if(err){
-        console.error(err);
-        process.exit(1); // exit if we cannot connect to the DB
+global.db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error("❌ Database connection error:", err.message);
+        process.exit(1); // Exit if the database fails to connect
     } else {
-        console.log("Database connected successfully");
-        global.db.run("PRAGMA foreign_keys=ON"); // ensure foreign key constraints are respected
+        console.log("✅ Database connected successfully");
+        global.db.run("PRAGMA foreign_keys=ON", (err) => {
+            if (err) {
+                console.error("⚠️ Failed to enable foreign key constraints:", err.message);
+            } else {
+                console.log("🔗 Foreign key constraints enabled");
+            }
+        });
     }
 });
 

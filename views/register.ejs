@@ -153,22 +153,22 @@
     <!-- JavaScript Logic -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
+    
             // Regular expressions for validation
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
-
+    
             // DOM elements
             const errorMsg = document.getElementById("error-message");
             const successMsg = document.getElementById("success-message");
             const registerForm = document.getElementById("register-form");
-
+    
             if (!errorMsg || !successMsg || !registerForm) {
                 console.error("Missing required elements in HTML");
                 return;
             }
-
+    
             // Function to validate form input
             function validateForm(event) {
 
@@ -185,8 +185,13 @@
                 successMsg.style.display = "none";
                 errorMsg.innerHTML = "";
 
+                // Clear previous error message
+                // errorMsg.classList.add("d-none");
+                // successMsg.classList.add("d-none");
+
                 // Validate Username
                 if (username.length < 3) {
+                    console.log("Username validation failed."); // Debugging
                     showError("Username must be at least 3 characters long!");
                     event.preventDefault();
                     return false;
@@ -194,6 +199,7 @@
 
                 // Validate Email
                 if (!emailRegex.test(email)) {
+                    console.log("Email validation failed."); // Debugging
                     showError("Invalid email format!");
                     event.preventDefault();
                     return false;
@@ -201,6 +207,7 @@
 
                 // Validate Phone Number
                 if (!phoneRegex.test(phone)) {
+                    console.log("Phone validation failed."); // Debugging
                     showError("Invalid phone number format!");
                     event.preventDefault();
                     return false;
@@ -208,6 +215,7 @@
 
                 // Validate Password
                 if (!passwordRegex.test(password)) {
+                    console.log("Password validation failed."); // Debugging
                     showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
                     event.preventDefault();
                     return false;
@@ -215,50 +223,79 @@
 
                 // Validate Passwords Match
                 if (password !== confirmPassword) {
+                    console.log("Confirm Password validation failed."); // Debugging
                     showError("Passwords do not match!");
                     event.preventDefault();
                     return false;
                 }
 
                 // If all validations pass, show success message
+                console.log("All validations passed."); // Debugging
                 showSuccess("Registration successful! You can now log in.");
-                return true;
+                return true;  // Allow form submission
             }
-
+    
+            // Function to display error messages
+            function showError(message) {
+                errorMsg.style.display = "block";
+                errorMsg.innerHTML = message;
+            }
+    
+            // Function to display success message
+            function showSuccess(message) {
+                successMsg.style.display = "block";
+                successMsg.innerHTML = message;
+            }
+    
+            // Attach event listener for form submission
+            registerForm.addEventListener("submit", function(event) {
+                console.log("Form submit event triggered.");
+                
+                // Validate the form
+                const isValid = validateForm(event);
+                if (!isValid) {
+                    console.log("Validation failed. Form not submitted.");
+                    event.preventDefault();  // Prevent form from submitting if validation fails
+                } else {
+                    console.log("Validation successful. Form submitted.");
+                    // You may need to handle this case if you want to allow for asynchronous behavior (like with AJAX)
+                }
+            });
+    
             // Toggle Password Visibility
             function togglePasswordVisibility(inputId, iconId) {
                 const passwordField = document.getElementById(inputId);
                 const eyeIcon = document.getElementById(iconId);
-
+    
                 const isPassword = passwordField.type === "password";
                 passwordField.type = isPassword ? "text" : "password";
                 eyeIcon.classList.toggle("bi-eye-slash", isPassword);
                 eyeIcon.classList.toggle("bi-eye", !isPassword);
             }
-
+    
             // Attach event listeners to toggle password visibility
             document.getElementById("toggle-password").addEventListener("click", function () {
                 togglePasswordVisibility("newPassword", "toggle-password");
             });
-
+    
             document.getElementById("toggle-confirm-password").addEventListener("click", function () {
                 togglePasswordVisibility("confirmPassword", "toggle-confirm-password");
             });
-
+    
             // Background image array
             const images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"];
             let index = 0;
-
+    
             // Function to change background image
             function changeBackground() {
                 document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
                 index = (index + 1) % images.length;
             }
-
+    
             // Change background every 10 seconds
             setInterval(changeBackground, 10000);
             changeBackground();  // Set initial background image
         });
-    </script>        
+    </script>
 </body>
 </html>
