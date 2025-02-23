@@ -111,7 +111,7 @@
                 <img src="/images/logo.png" alt="Logo" class="logo">
             </a>
             <div>
-                <button class="btn me-2 text-white">Guides</button>
+                <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
                 <button class="btn me-2 text-white">Hotels</button>
                 <button class="btn me-2 text-white">Promotions</button>
                 <a href="<%= user ? '/logout' : '/login' %>" class="btn me-2 text-white">
@@ -183,6 +183,12 @@
 </div>
 
 <script>
+
+    function redirectToGuides() {
+        
+        window.location.href = "/travel-guide"
+    }
+
     function initMap() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(

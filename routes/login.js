@@ -28,7 +28,7 @@ router.post('/', (req, res) => {
 
         // Store user session
         req.session.user = {
-            id: user.id,
+            id: user.user_id,
             username: user.username,
             email: user.email
         };

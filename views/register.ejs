@@ -156,8 +156,22 @@
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+
             const errorMsg = document.getElementById("error-message");
             const successMsg = document.getElementById("success-message");
+            const registerForm = document.getElementById("register-form");
+
+            if (!errorMsg || !successMsg || !registerForm) {
+                console.error("Missing required elements in HTML");
+                return;
+            }
+
+            registerForm.addEventListener("submit", function (event) {
+                if (!validateForm(event)) {
+                    event.preventDefault();
+                }
+            });
+        
 
             // Function to validate form input
             function validateForm(event) {
@@ -169,9 +183,22 @@
                 const password = document.getElementById("newPassword").value;
                 const confirmPassword = document.getElementById("confirmPassword").value;
 
+                console.log("Validating form..."); // Debugging
+
+                // Clear previous messages
+                errorMsg.style.display = "none";
+                successMsg.style.display = "none";
+                errorMsg.innerHTML = "";
+
                 // Clear previous error message
-                errorMsg.classList.add("d-none");
-                successMsg.classList.add("d-none");
+                // errorMsg.classList.add("d-none");
+                // successMsg.classList.add("d-none");
+
+                // Validate Username
+                if (username.length < 3) {
+                    showError("Username must be at least 3 characters long!");
+                    return false;
+                }
 
                 // Validate Email
                 if (!emailRegex.test(email)) {
@@ -200,28 +227,29 @@
                 // If all validations pass, show success message
                 showSuccess("Registration successful! You can now log in.");
                 return true;
-
-                
-                // // Attach form validation to form submission
-                // document.getElementById("register-form").addEventListener("submit", function (event) {
-                //     if (!validateForm(event)) {
-                //         return false; // Prevent form submission if validation fails
-                //     }
-                //     // Form will submit if validation passes
-                // });
             }
 
             // Display error message
             function showError(message) {
                 errorMsg.innerHTML = message;
-                errorMsg.classList.remove("d-none");
+                errorMsg.style.display = "block"; // Ensure it shows up
+                console.log("Error:", message);
             }
 
             // Display success message
             function showSuccess(message) {
                 successMsg.innerHTML = message;
-                successMsg.classList.remove("d-none");
+                successMsg.style.display = "block"; // Ensure it shows up
+                console.log("Success:", message);
+
             }
+
+            // // Attach event listener
+            // registerForm.addEventListener("submit", function (event) {
+            //     if (!validateForm(event)) {
+            //         event.preventDefault();
+            //     }
+            // });
 
             // Toggle Password Visibility
             function togglePasswordVisibility(inputId, iconId) {
