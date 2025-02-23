@@ -153,10 +153,13 @@
     <!-- JavaScript Logic -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+            // Regular expressions for validation
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
 
+            // DOM elements
             const errorMsg = document.getElementById("error-message");
             const successMsg = document.getElementById("success-message");
             const registerForm = document.getElementById("register-form");
@@ -166,16 +169,8 @@
                 return;
             }
 
-            registerForm.addEventListener("submit", function (event) {
-                if (!validateForm(event)) {
-                    event.preventDefault();
-                }
-            });
-        
-
             // Function to validate form input
             function validateForm(event) {
-                event.preventDefault(); // Prevent form submission until validation passes
 
                 const username = document.getElementById("username").value;
                 const email = document.getElementById("email").value;
@@ -190,37 +185,38 @@
                 successMsg.style.display = "none";
                 errorMsg.innerHTML = "";
 
-                // Clear previous error message
-                // errorMsg.classList.add("d-none");
-                // successMsg.classList.add("d-none");
-
                 // Validate Username
                 if (username.length < 3) {
                     showError("Username must be at least 3 characters long!");
+                    event.preventDefault();
                     return false;
                 }
 
                 // Validate Email
                 if (!emailRegex.test(email)) {
                     showError("Invalid email format!");
+                    event.preventDefault();
                     return false;
                 }
 
                 // Validate Phone Number
                 if (!phoneRegex.test(phone)) {
                     showError("Invalid phone number format!");
+                    event.preventDefault();
                     return false;
                 }
 
                 // Validate Password
                 if (!passwordRegex.test(password)) {
                     showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
+                    event.preventDefault();
                     return false;
                 }
 
                 // Validate Passwords Match
                 if (password !== confirmPassword) {
                     showError("Passwords do not match!");
+                    event.preventDefault();
                     return false;
                 }
 
@@ -228,28 +224,6 @@
                 showSuccess("Registration successful! You can now log in.");
                 return true;
             }
-
-            // Display error message
-            function showError(message) {
-                errorMsg.innerHTML = message;
-                errorMsg.style.display = "block"; // Ensure it shows up
-                console.log("Error:", message);
-            }
-
-            // Display success message
-            function showSuccess(message) {
-                successMsg.innerHTML = message;
-                successMsg.style.display = "block"; // Ensure it shows up
-                console.log("Success:", message);
-
-            }
-
-            // // Attach event listener
-            // registerForm.addEventListener("submit", function (event) {
-            //     if (!validateForm(event)) {
-            //         event.preventDefault();
-            //     }
-            // });
 
             // Toggle Password Visibility
             function togglePasswordVisibility(inputId, iconId) {
