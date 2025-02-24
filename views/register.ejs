@@ -180,58 +180,58 @@
 
                 console.log("Validating form..."); // Debugging
 
-                // Clear previous messages
-                errorMsg.style.display = "none";
-                successMsg.style.display = "none";
-                errorMsg.innerHTML = "";
-
-                // Clear previous error message
-                // errorMsg.classList.add("d-none");
-                // successMsg.classList.add("d-none");
-
                 // Validate Username
                 if (username.length < 3) {
-                    console.log("Username validation failed."); // Debugging
-                    showError("Username must be at least 3 characters long!");
+                    console.log("Username validation failed. Error: Username must be at least 3 characters long!"); // Debugging
+                    errorMsg.innerHTML = "Username must be at least 3 characters long!";
+                    errorMsg.classList.remove("d-none");
                     event.preventDefault();
                     return false;
                 }
 
                 // Validate Email
                 if (!emailRegex.test(email)) {
-                    console.log("Email validation failed."); // Debugging
-                    showError("Invalid email format!");
+                    console.log("Email validation failed. Error: Invalid email format!"); // Debugging
+                    errorMsg.innerHTML = "Invalid email format! E.g. user@example.com";
+                    errorMsg.classList.remove("d-none");
                     event.preventDefault();
                     return false;
                 }
 
                 // Validate Phone Number
                 if (!phoneRegex.test(phone)) {
-                    console.log("Phone validation failed."); // Debugging
-                    showError("Invalid phone number format!");
+                    console.log("Phone validation failed. Error: Invalid phone number format!"); // Debugging
+                    errorMsg.innerHTML = "Invalid phone number format! E.g. +(65)XXXXXXXX";
+                    errorMsg.classList.remove("d-none");
                     event.preventDefault();
                     return false;
                 }
 
                 // Validate Password
                 if (!passwordRegex.test(password)) {
-                    console.log("Password validation failed."); // Debugging
-                    showError("Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)");
+                    console.log("Password validation failed. Error: Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)"); // Debugging
+                    errorMsg.innerHTML = "Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)";
+                    errorMsg.classList.remove("d-none");
                     event.preventDefault();
                     return false;
                 }
 
                 // Validate Passwords Match
                 if (password !== confirmPassword) {
-                    console.log("Confirm Password validation failed."); // Debugging
-                    showError("Passwords do not match!");
+                    console.log("Confirm Password validation failed. Error: Passwords do not match!"); // Debugging
+                    errorMsg.innerHTML = "Passwords do not match!";
+                    errorMsg.classList.remove("d-none");
                     event.preventDefault();
                     return false;
                 }
 
+                errorMsg.classList.add("d-none");
+
                 // If all validations pass, show success message
                 console.log("All validations passed."); // Debugging
-                showSuccess("Registration successful! You can now log in.");
+                successMsg.innerHTML = "Registration successful! You can now log in.";
+                successMsg.classList.remove("d-none");
+
                 return true;  // Allow form submission
             }
     

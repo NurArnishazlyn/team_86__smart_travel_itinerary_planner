@@ -72,6 +72,7 @@ router.post('/', (req, res) => {
                 return res.render('register', { title: 'Register', error: "Failed to register user!" });
             }
 
+            console.log("Inserted user ID:", this.lastID); // Debugging output
             const userId = this.lastID; // Get the last inserted user ID
 
             // Insert email into email_accounts table
@@ -86,6 +87,7 @@ router.post('/', (req, res) => {
                 req.session.user = { id: userId, username: username };
 
                 // Redirect user to login page
+                console.log("User registered successfully:", username);
                 res.redirect('/login');
             });
         });
