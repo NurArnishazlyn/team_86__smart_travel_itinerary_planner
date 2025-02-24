@@ -85,7 +85,33 @@ CREATE TABLE IF NOT EXISTS blog_post_comments (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+--- Manage-Trips Start ---
 
+CREATE TABLE IF NOT EXISTS upcoming_trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS past_trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT,
+    moved_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Date it was moved from upcoming_trips
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+--- Manage-Trips End ---
 
 -- Insert default users
 INSERT INTO users (full_name, username, password, phone) 
@@ -121,6 +147,48 @@ INSERT INTO blog_posts (user_id, title, content) VALUES
 (2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.');
 
 -- Insert demo data into blog_posts
+INSERT INTO blog_posts (user_id, title, content, country) VALUES
+(1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.', 'Japan'),
+(2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.', 'France'),
+(1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.', 'China'),
+(2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.', 'Singapore');
+
+INSERT INTO blog_post_images (post_id, image_path)
+SELECT post_id, 'images/travel-guide-demo.png'
+FROM blog_posts
+WHERE title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+);
+
+INSERT INTO blog_post_likes (post_id, user_id)
+SELECT bp.post_id, u.user_id
+FROM blog_posts AS bp, users AS u
+WHERE bp.title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+)
+AND u.username IN ('john_doe', 'jane_doe');
+
+INSERT INTO blog_post_comments (post_id, user_id, comment_text)
+SELECT bp.post_id, u.user_id, 
+       CASE 
+           WHEN u.username = 'john_doe' THEN 'John''s comment on ' || bp.title
+           ELSE 'Jane''s comment on ' || bp.title  -- When u.username = 'jane_doe'
+       END
+FROM blog_posts AS bp, users AS u
+WHERE bp.title IN (
+    'Exploring the Hidden Gems of Paris',
+    'A Foodie''s Guide to Tokyo',
+    'Adventure in the Amazon Rainforest',
+    'Island Hopping in Greece'
+)
+AND u.username IN ('john_doe', 'jane_doe');
+
 --- Manage Trips Dummy Data ---
 
 -- Insert sample upcoming trips
