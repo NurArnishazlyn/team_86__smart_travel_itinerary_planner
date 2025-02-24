@@ -120,6 +120,7 @@ INSERT INTO blog_posts (user_id, title, content) VALUES
 (1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.'),
 (2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.');
 
+-- Insert demo data into blog_posts
 --- Manage Trips Dummy Data ---
 
 -- Insert sample upcoming trips
