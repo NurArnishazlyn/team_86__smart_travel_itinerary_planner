@@ -114,48 +114,24 @@ VALUES
 
 
 -- Insert demo data into blog_posts
-INSERT INTO blog_posts (user_id, title, content, country) VALUES
-(1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.', 'Japan'),
-(2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.', 'France'),
-(1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.', 'China'),
-(2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.', 'Singapore');
+INSERT INTO blog_posts (user_id, title, content) VALUES
+(1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.'),
+(2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.'),
+(1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.'),
+(2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.');
 
-INSERT INTO blog_post_images (post_id, image_path)
-SELECT post_id, 'images/travel-guide-demo.png'
-FROM blog_posts
-WHERE title IN (
-    'Exploring the Hidden Gems of Paris',
-    'A Foodie''s Guide to Tokyo',
-    'Adventure in the Amazon Rainforest',
-    'Island Hopping in Greece'
-);
+--- Manage Trips Dummy Data ---
 
-INSERT INTO blog_post_likes (post_id, user_id)
-SELECT bp.post_id, u.user_id
-FROM blog_posts AS bp, users AS u
-WHERE bp.title IN (
-    'Exploring the Hidden Gems of Paris',
-    'A Foodie''s Guide to Tokyo',
-    'Adventure in the Amazon Rainforest',
-    'Island Hopping in Greece'
-)
-AND u.username IN ('john_doe', 'jane_doe');
+-- Insert sample upcoming trips
+INSERT INTO upcoming_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
+(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
+(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
+(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
 
-INSERT INTO blog_post_comments (post_id, user_id, comment_text)
-SELECT bp.post_id, u.user_id, 
-       CASE 
-           WHEN u.username = 'john_doe' THEN 'John''s comment on ' || bp.title
-           ELSE 'Jane''s comment on ' || bp.title  -- When u.username = 'jane_doe'
-       END
-FROM blog_posts AS bp, users AS u
-WHERE bp.title IN (
-    'Exploring the Hidden Gems of Paris',
-    'A Foodie''s Guide to Tokyo',
-    'Adventure in the Amazon Rainforest',
-    'Island Hopping in Greece'
-)
-AND u.username IN ('john_doe', 'jane_doe');
+-- Insert sample past trips
+INSERT INTO past_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
+(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
+(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
+(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
 
-
-
-COMMIT;
+commit;
