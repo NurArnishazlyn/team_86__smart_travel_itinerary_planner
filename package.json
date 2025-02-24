@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A template for the mid-term assignment",
   "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build-db": "cat db_schema.sql | sqlite3 database.db #build anew database from the sql file",
@@ -10,6 +11,7 @@
     "build-db-win": "sqlite3 database.db < db_schema.sql",
     "clean-db-win": "del database.db",
     "start": "node index.js"
+    "start": "node server.js"
   },
   "author": "Simon Katan",
   "license": "ISC",
