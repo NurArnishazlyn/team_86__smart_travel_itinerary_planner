@@ -21,9 +21,9 @@
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons">
-                <button class="btn me-2 text-white">Guides</button>
+                <button class="btn me-2 text-white" onclick="redirectToHome()">Home</button>
+                <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
                 <button class="btn me-2 text-white">Hotels</button>
-                <button class="btn me-2 text-white">Manage</button>
                 <button class="btn me-2 text-white">Promotions</button>
                 <button class="btn text-white">Logout</button>
             </div>
@@ -136,6 +136,16 @@
                 }
             });
         });
+
+        function redirectToHome() 
+        {
+        window.location.href = "/"
+        }
+
+        function redirectToGuides() 
+        {
+        window.location.href = "/travel-guide"
+        }
     </script>
 
     <!-- CSS Styling -->
