@@ -64,6 +64,15 @@ app.get('/', (req,res) => {
     });
 });
 
+<<<<<<< Updated upstream
+=======
+app.get('/manage-trips', (req,res) => {
+    res.render("manage-trips");
+});
+
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 // Login 
 const loginRoutes = require('./routes/login');
 app.use('/login', loginRoutes);
@@ -76,11 +85,14 @@ app.use('/register', registerRoutes);
 const travelGuideRouter = require('./routes/travel-guide');
 app.use('/travel-guide', travelGuideRouter);
 
+<<<<<<< Updated upstream
 // Manage Trips
 const manageTripsRoutes = require("./routes/manage-trips");
 app.use('/manage-trips', manageTripsRoutes);
 
 // Deals/Promotions
+=======
+>>>>>>> Stashed changes
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
 
