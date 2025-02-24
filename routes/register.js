@@ -62,6 +62,7 @@ router.post('/', (req, res) => {
         }
 
         if (user) {
+            console.log("Failed to register. Username already exists!")
             return res.render('register', { title: 'Register', error: "Username already exists!" });
         }
 

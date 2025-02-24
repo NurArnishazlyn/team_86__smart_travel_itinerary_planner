@@ -189,6 +189,15 @@
                     return false;
                 }
 
+                // Validate Username Exists
+                if (username.) {
+                    console.log("Username validation failed. Error: Username already exists!"); // Debugging
+                    errorMsg.innerHTML = "Username already exists!";
+                    errorMsg.classList.remove("d-none");
+                    event.preventDefault();
+                    return false;
+                }
+
                 // Validate Email
                 if (!emailRegex.test(email)) {
                     console.log("Email validation failed. Error: Invalid email format!"); // Debugging
@@ -227,10 +236,16 @@
 
                 errorMsg.classList.add("d-none");
 
-                // If all validations pass, show success message
+                // Show success message 
                 console.log("All validations passed."); // Debugging
-                successMsg.innerHTML = "Registration successful! You can now log in.";
+                successMsg.innerHTML = "Registration successful! Redirecting to login page...";
                 successMsg.classList.remove("d-none");
+
+                // Set a timeout before redirecting to "redirecting" page
+                setTimeout(() => {
+                    window.location.href = "/redirecting"; // Redirect to a temporary page
+                    console.log("Redirecting to redirecting page...");
+                }, 30 * 60 * 1000);  // 30 minutes
 
                 return true;  // Allow form submission
             }
@@ -258,7 +273,6 @@
                     event.preventDefault();  // Prevent form from submitting if validation fails
                 } else {
                     console.log("Validation successful. Form submitted.");
-                    // You may need to handle this case if you want to allow for asynchronous behavior (like with AJAX)
                 }
             });
     
