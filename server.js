@@ -84,6 +84,9 @@ app.use('/manage-trips', manageTripsRoutes);
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
 
+const hotelsRouter = require('./routes/hotels'); // Import the hotels route
+app.use('/hotels', hotelsRouter); // Use the hotels router
+
 // Contact
 const contactRoutes = require('./routes/contact');
 app.use('/contact', contactRoutes);
