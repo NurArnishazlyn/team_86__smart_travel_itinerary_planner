@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS activities (
     FOREIGN KEY (itinerary_id) REFERENCES itineraries(id) ON DELETE CASCADE
 );
 
--- travel guides
+-- Travel Guides (Blog Posts) Table
 CREATE TABLE IF NOT EXISTS blog_posts (
     post_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,  -- Author of the blog post
@@ -63,7 +63,6 @@ CREATE TABLE IF NOT EXISTS blog_post_images (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES blog_posts(post_id) ON DELETE CASCADE
 );
-
 
 CREATE TABLE IF NOT EXISTS blog_post_likes (
     like_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -138,7 +137,6 @@ VALUES
     (1, 'Wine Tasting Tour', '2025-06-18 14:00:00', 'Tuscany, Italy', 'Don’t forget to book a driver.'),
     (2, 'Hike the Blue Ridge Trail', '2025-07-21 08:00:00', 'Blue Ridge Mountains, USA', 'Pack water and snacks');
 
-
 -- Insert demo data into blog_posts
 INSERT INTO blog_posts (user_id, title, content) VALUES
 (1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.'),
@@ -146,7 +144,7 @@ INSERT INTO blog_posts (user_id, title, content) VALUES
 (1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.'),
 (2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.');
 
--- Insert demo data into blog_posts
+-- Insert demo data into blog_posts (with country field)
 INSERT INTO blog_posts (user_id, title, content, country) VALUES
 (1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.', 'Japan'),
 (2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.', 'France'),
@@ -178,7 +176,7 @@ INSERT INTO blog_post_comments (post_id, user_id, comment_text)
 SELECT bp.post_id, u.user_id, 
        CASE 
            WHEN u.username = 'john_doe' THEN 'John''s comment on ' || bp.title
-           ELSE 'Jane''s comment on ' || bp.title  -- When u.username = 'jane_doe'
+           ELSE 'Jane''s comment on ' || bp.title
        END
 FROM blog_posts AS bp, users AS u
 WHERE bp.title IN (
@@ -203,4 +201,13 @@ INSERT INTO past_trips (user_id, title, destination, trip_start_date, trip_end_d
 (1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
 (2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
 
-commit;
+-- Contact Messages Table
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMIT;
