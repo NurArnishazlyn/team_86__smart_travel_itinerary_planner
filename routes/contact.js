@@ -14,10 +14,20 @@ router.post('/', (req, res) => {
         return res.render('contact', { title: "Contact Us", success: null, error: "All fields are required!" });
     }
 
-    // Here, you can save the message to a database or send an email
-    console.log(`New Contact Message: Name: ${name}, Email: ${email}, Message: ${message}`);
-
-    res.render('contact', { title: "Contact Us", success: "Your message has been sent!", error: null });
+    // Insert the contact message into the database.
+    global.db.run(
+        "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
+        [name, email, message],
+        function(err) {
+            if (err) {
+                console.error("Failed to save contact message:", err);
+                return res.render('contact', { title: "Contact Us", success: null, error: "Failed to send message. Please try again later." });
+            } else {
+                console.log(`New Contact Message: Name: ${name}, Email: ${email}, Message: ${message}`);
+                return res.render('contact', { title: "Contact Us", success: "Your message has been sent!", error: null });
+            }
+        }
+    );
 });
 
 module.exports = router;
