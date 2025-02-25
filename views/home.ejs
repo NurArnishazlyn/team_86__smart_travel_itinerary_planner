@@ -112,8 +112,9 @@
             </a>
             <div>
                 <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
-                <button class="btn me-2 text-white">Hotels</button>
-                <button class="btn me-2 text-white">Promotions</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/hotels'">Hotels</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/deals'">Promotions</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/contact'">Contact Us</button>
                 <a href="<%= user ? '/logout' : '/login' %>" class="btn me-2 text-white">
                     <%= user ? `Logout (${user.username})` : "Log In / Sign Up" %>
                 </a>

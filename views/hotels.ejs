@@ -3,18 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <title>Hotels</title>
 </head>
-<body>
-    <!-- Header Section -->
-    <header>
-        <div class="logo">
-            <img src="/images/logo.png" alt="Logo" class="logo">
-        </div>
-    </header>
 
-    <h1>Hotels</h1>
+<body>
+    <div class="wrapper">
+        <!-- Header Section -->
+        <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </a>
+            <div>
+                <button class="btn me-2 text-white">Guides</button>
+                <button class="btn me-2 text-white">Hotels</button>
+                <button class="btn text-white">Promotions</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content bg-white text-center p-3">
+            <!-- Search Bar -->
+            <div class="search-container mb-3">
+                <input type="text" id="searchBar" class="search-bar" placeholder="Search for a City or Country">
+            </div>
+
+            <!-- Main Map Section -->
+            <div id="map"></div>
+
+            <!-- Hotel Viewer Map -->
+            <div class="hotel-map-section mt-4">
+                <h4 class="text-center">Hotels Near Your Destination</h4>
+                <div id="hotel-map"></div>
+            </div>
+
+            <!-- Date Selector -->
+            <div class="date-selector mt-4">
+                <h5 class="text-center">Travel Dates</h5>
+                <div class="date-picker d-flex justify-content-center">
+                    <input type="date" class="form-control me-2" id="checkin">
+                    <input type="date" class="form-control" id="checkout">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer p-3 border-top text-center">
+        <div class="ft-container">
+            <p>&copy; 2025 Travel Itinerary Planner from Team 86. All Rights Reserved</p>
+            <div class="d-flex justify-content-center">
+                <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
+                <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
+                <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Google Maps Script -->
+    <script>
+        let map, hotelMap, service;
+        let selectedLocation = { lat: 1.2906, lng: 103.8465 }; // Default: Clarke Quay, Singapore
+
+        function initMap() {
+            // Main Map - Satellite View with Labels
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 19, // Higher zoom for closer view
+                center: selectedLocation,
+                mapTypeId: 'hybrid' // Satellite view with labels
+            });
+
+            new google.maps.Marker({
+                position: selectedLocation,
+                map: map,
+                title: "Clarke Quay, Singapore"
+            });
+
+            service = new google.maps.places.PlacesService(map);
+
+            document.getElementById("searchBar").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    searchLocation(this.value, map);
+                }
+            });
+
+            document.getElementById("checkin").addEventListener("change", fetchHotels);
+            document.getElementById("checkout").addEventListener("change", fetchHotels);
+
+            // Hotel Viewer Map - More Zoomed Out
+            hotelMap = new google.maps.Map(document.getElementById("hotel-map"), {
+                zoom: 17, // More zoomed out than main map
+                center: selectedLocation,
+                mapTypeId: 'hybrid' // Satellite view with labels
+            });
+
+            fetchHotels(); // Load hotels when page loads
+        }
+
+        function searchLocation(location, map) {
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ address: location }, function(results, status) {
+                if (status === "OK") {
+                    selectedLocation = results[0].geometry.location;
+                    map.setCenter(selectedLocation);
+                    hotelMap.setCenter(selectedLocation); // Sync but keep hotel map more zoomed out
+                    new google.maps.Marker({
+                        map: map,
+                        position: selectedLocation
+                    });
+
+                    fetchHotels(); // Fetch hotels when location changes
+                } else {
+                    alert("Location not found: " + status);
+                }
+            });
+        }
+
+        function fetchHotels() {
+            const request = {
+                location: selectedLocation,
+                radius: 500, // 500m radius to capture more hotels
+                type: "lodging"
+            };
+
+            service.nearbySearch(request, function(results, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    displayHotelsOnMap(results);
+                }
+            });
+        }
+
+        function displayHotelsOnMap(hotels) {
+            hotelMap.setCenter(selectedLocation);
+            hotelMap.setZoom(17); // Ensures a more zoomed-out view
+
+            hotels.forEach(hotel => {
+                new google.maps.Marker({
+                    position: hotel.geometry.location,
+                    map: hotelMap,
+                    title: hotel.name
+                });
+            });
+        }
+    </script>
+
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCw6cScfzxTmRJPD5PX_J3TKzUypYw_JXU&libraries=places&callback=initMap">
+    </script>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Styles -->
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 760px;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .container-start {
+            background-color: pink;
+        }
+
+        .btn {
+            background-color: palevioletred;
+        }
+
+        .btn:hover {
+            background-color: rgb(228, 36, 100);
+            transition: 0.7s;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        .footer {
+            background-color: pink;
+        }
+
+        .ft-container p {
+            color: white;
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar {
+            width: 50%;
+            padding: 10px;
+            border: 2px solid gray;
+            border-radius: 15px;
+            font-size: 18px;
+            text-align: center;
+            background-color: white;
+        }
+
+        /* Adjusted Map Styling */
+        #map, #hotel-map {
+            width: 80%;
+            height: 500px;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Date Selector */
+        .date-selector {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+        }
+
+        .date-picker input {
+            width: 45%;
+        }
+    </style>
 
 </body>
 </html>

@@ -48,7 +48,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const postId = req.params.id;
   let sql = `
-    SELECT bp.title, bp.content, bp.country, bpi.image_path, u.username,
+    SELECT bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username,
            group_concat(c.comment_text, '<br>') AS comments  -- Concatenate comments
     FROM blog_posts AS bp
     LEFT JOIN blog_post_images AS bpi ON bp.post_id = bpi.post_id
@@ -57,17 +57,16 @@ router.get('/:id', (req, res) => {
     WHERE bp.post_id = ?
     GROUP BY bp.post_id, bp.title, bp.content, bp.country, bpi.image_path, u.username`;
 
-
-  
-
   db.get(sql, [postId], (err, post) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Database error');
     } else if (!post) {
-      // ... handle post not found
+      return res.status(404).send('Post not found'); // Changed to 404
     } else {
       console.log(post.image_path);
+      //post.post_id is needed
+      console.log(post.post_id);
       res.render('guides-details.ejs', { post: post, user: req.session.user });
     }
   });
@@ -114,6 +113,46 @@ router.post('/:id/like', (req, res) => {
         res.send({ liked: true }); // Send back that it's now liked
       });
     }
+  });
+});
+
+
+// New route for adding a comment to a post
+router.post('/:id/comment', (req, res) => {
+  const postId = req.params.id;
+  const userId = req.session.user?.id; // Get the user ID from the session
+  const commentText = `<b>${req.session.user?.username}:</b> ${req.body.comment}`;
+
+  console.log("userId: ", userId);
+  console.log("postId: ", postId);
+  console.log("commentText: ", commentText);
+
+  if (!userId) {
+      return res.status(401).send('Unauthorized: User not logged in');
+  }
+  if (!commentText || commentText.trim() === "") {
+    return res.status(400).send("Bad request: comment can not be empty");
+  }
+
+  // Insert the comment into the blog_post_comments table
+  db.run('INSERT INTO blog_post_comments (post_id, user_id, comment_text) VALUES (?, ?, ?)', [postId, userId, commentText], function (err) {
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Database error');
+      }
+
+      //Get the latest comment id
+      const commentId = this.lastID; 
+
+      // Get the username of the comment author
+      db.get('SELECT username FROM users WHERE user_id = ?', [userId], (err, user) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send('Database error');
+        }
+         const username = user.username;
+         res.send({ success: true, message: 'Comment added successfully', newComment: { comment_id: commentId, username: username, comment_text: commentText} });
+      });
   });
 });
 

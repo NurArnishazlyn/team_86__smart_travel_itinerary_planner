@@ -1,5 +1,5 @@
 /**
-* index.js
+* server.js
 * This is your main app entry point
 */
 
@@ -40,13 +40,19 @@ app.use((req, res, next) => {
 
 // Database Initialization
 const sqlite3 = require('sqlite3').verbose();
-global.db = new sqlite3.Database('./database.db',function(err){
-    if(err){
-        console.error(err);
-        process.exit(1); // exit if we cannot connect to the DB
+global.db = new sqlite3.Database('./database.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+    if (err) {
+        console.error("❌ Database connection error:", err.message);
+        process.exit(1); // Exit if the database fails to connect
     } else {
-        console.log("Database connected successfully");
-        global.db.run("PRAGMA foreign_keys=ON"); // ensure foreign key constraints are respected
+        console.log("✅ Database connected successfully");
+        global.db.run("PRAGMA foreign_keys=ON", (err) => {
+            if (err) {
+                console.error("⚠️ Failed to enable foreign key constraints:", err.message);
+            } else {
+                console.log("🔗 Foreign key constraints enabled");
+            }
+        });
     }
 });
 
@@ -56,11 +62,6 @@ app.get('/', (req,res) => {
         title: "Home",
         user: req.session.user || null // Make sure 'user' is passed to the view
     });
-});
-
-// Manage Trips
-app.get('/manage-trips', (req,res) => {
-    res.render("manage-trips");
 });
 
 // Login 
@@ -75,9 +76,16 @@ app.use('/register', registerRoutes);
 const travelGuideRouter = require('./routes/travel-guide');
 app.use('/travel-guide', travelGuideRouter);
 
+// Manage Trips
+const manageTripsRoutes = require("./routes/manage-trips");
+app.use('/manage-trips', manageTripsRoutes);
+
 // Deals/Promotions
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
+
+const hotelsRouter = require('./routes/hotels'); // Import the hotels route
+app.use('/hotels', hotelsRouter); // Use the hotels router
 
 // Contact
 const contactRoutes = require('./routes/contact');

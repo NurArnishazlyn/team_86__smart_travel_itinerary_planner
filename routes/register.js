@@ -2,11 +2,16 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
+// Regular expressions for validation
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+
 // Register Page (GET Request)
 router.get('/', (req, res) => {
     res.render('register', {
         title: 'Register',
-        error: null
+        error: null // Pass any error message if there is one
     });
 });
 
@@ -19,35 +24,57 @@ router.post('/', (req, res) => {
         return res.render('register', { title: 'Register', error: "All fields are required!" });
     }
 
-    // Check if passwords match
+    // Validate Username
+    if (username.length < 3) {
+        return res.render('register', { title: 'Register', error: "Username must be at least 3 characters long!" });
+    }
+
+    // Validate Email
+    if (!emailRegex.test(email)) {
+        return res.render('register', { title: 'Register', error: "Invalid email format!" });
+    }
+
+    // Validate Phone Number
+    if (!phoneRegex.test(phone)) {
+        return res.render('register', { title: 'Register', error: "Invalid phone number format!" });
+    }
+
+    // Validate Password
+    if (!passwordRegex.test(password)) {
+        return res.render('register', {
+            title: 'Register',
+            error: "Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)"
+        });
+    }
+
+    // Validate Passwords Match
     if (password !== confirm_password) {
         return res.render('register', { title: 'Register', error: "Passwords do not match!" });
     }
 
     // Hash the password before saving to DB
-    const hashedPassword = bcrypt.hashSync(password, 10); 
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
     // Check if the username already exists
     db.get("SELECT * FROM users WHERE username = ?", [username], (err, user) => {
         if (err) {
-            console.error("Database error:", err);
             return res.render('register', { title: 'Register', error: "Database error!" });
         }
 
         if (user) {
+            console.log("Failed to register. Username already exists!")
             return res.render('register', { title: 'Register', error: "Username already exists!" });
         }
 
-        // Insert the user into the database
+        // Insert the new user into the database
         const insertUserQuery = "INSERT INTO users (full_name, username, password, phone) VALUES (?, ?, ?, ?)";
         db.run(insertUserQuery, [full_name, username, hashedPassword, phone], function (err) {
             if (err) {
-                console.error("Failed to register user:", err.message);
                 return res.render('register', { title: 'Register', error: "Failed to register user!" });
             }
 
             console.log("Inserted user ID:", this.lastID); // Debugging output
-            const userId = this.lastID; // Get the user_id of the newly inserted user
+            const userId = this.lastID; // Get the last inserted user ID
 
             // Insert email into email_accounts table
             const insertEmailQuery = "INSERT INTO email_accounts (email_address, user_id) VALUES (?, ?)";
@@ -60,8 +87,9 @@ router.post('/', (req, res) => {
                 // Store user in session so they are logged in
                 req.session.user = { id: userId, username: username };
 
+                // Redirect user to login page
                 console.log("User registered successfully:", username);
-                res.redirect('/'); // Redirect user to home
+                res.redirect('/login');
             });
         });
     });

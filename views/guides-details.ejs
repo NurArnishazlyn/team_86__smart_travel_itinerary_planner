@@ -116,14 +116,21 @@
                 <p><%= post.content %></p>
                 <p>By: <%= post.username || 'Anonymous' %></p>
 
-                <% if (post.comments) { %>  
-                    <h3>Comments:</h3>
-                    <div id="comments-section">
-                        <%- post.comments %>  
-                    </div>
-                <% } else { %>
-                    <p>No comments yet.</p>
-                <% } %>
+                <h3>Comments:</h3>
+                <div id="comments-section">
+                  <% if (post.comments) { %>
+                      <%- post.comments %>
+                  <% } else { %>
+                      <p>No comments yet.</p>
+                  <% } %>
+                </div>
+
+                <form id="commentForm" action="/travel-guide/<%= post.post_id %>/comment" method="POST">
+                    <input type="text" name="comment" placeholder="Add a comment..." required>
+                    <button type="submit">Comment</button>
+                </form>
+                <div id="commentMessage"></div>
+
                 <a href="/travel-guide" class="back-link">Back to Travel Guide</a>
             </div>
 
@@ -131,9 +138,52 @@
             <p>Post not found.</p>
         <% } %>
     </div>
-   <!-- Bootstrap JS Bundle -->
-   <script src="/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+    <script>
+        document.getElementById('commentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            const form = event.target;
+            const formData = new FormData(form);
+    
+            fetch(form.action, {
+                method: 'POST',
+                body: new URLSearchParams(formData), // Send as URL-encoded data
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                  return response.text().then(text => { throw new Error(text) })
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('commentMessage').textContent = data.message;
+                    form.reset(); // Clear the form
+    
+                    // Create new element to add the comment
+                    const newComment = document.createElement('p');
+                    newComment.innerHTML = `<b>${data.newComment.username}:</b> ${data.newComment.comment_text}`;
+    
+                    const commentsSection = document.getElementById('comments-section');
+                    commentsSection.appendChild(newComment);
+                } else {
+                  console.error("fail");
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error.message);
+                document.getElementById('commentMessage').textContent = error.message;
+            });
+        });
+        </script>
+    
+       <!-- Bootstrap JS Bundle -->
+       <script src="/js/bootstrap.min.js"></script>
+    </body>
+    </html>
 
 

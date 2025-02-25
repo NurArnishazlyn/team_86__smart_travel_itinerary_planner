@@ -1,39 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-        <title>Manage-Trips</title>
-    </head>
-    <body>
-        <div class="wrapper">
-            <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
-                <a href="/">
-                    <img src="/images/logo.png" alt="Logo" class="logo">
-                </a>
-                <div>
-                    <button class="btn me-2 text-white">Guides</button>
-                    <button class="btn me-2 text-white">Hotels</button>
-                    <button class="btn text-white">Promotions</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Manage Trips</title>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Navigation Bar -->
+        <div class="container-start p-3 d-flex border-bottom justify-content-between align-items-center">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo" class="logo">
+            </a>
+
+            <!-- Menu Toggle Button (☰) for small screens -->
+            <button class="menu-toggle d-lg-none">☰</button>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <button class="btn me-2 text-white" onclick="redirectToHome()">Home</button>
+                <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
+                <button class="btn me-2 text-white">Hotels</button>
+                <button class="btn me-2 text-white">Promotions</button>
+                <button class="btn text-white">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-content p-3">
+
+
+            <!-- Upcoming Trips -->
+            <div class="upcoming-trips p-3">
+                <h5><b>Upcoming Trips:</b></h5>
+                <div class="d-flex flex-wrap">
+                    <% if (upcomingTrips.length > 0) { %>
+                        <% upcomingTrips.forEach(trip => { %>
+                            <div class="trip-card col-12 col-sm-6 col-md-4">
+                                <a href="/manage-trips/<%= trip.trip_id %>">
+                                    <img src="<%= trip.image_path %>" alt="<%= trip.title %>" class="trip-image">
+                                    <p><b><%= trip.title %></b><br>(<%= trip.trip_start_date %> - <%= trip.trip_end_date %>)</p>
+                                </a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <p>No upcoming trips found. Plan your next adventure!</p>
+                    <% } %>
                 </div>
             </div>
-            <div class="main-content bg-white">
+            
+            <!-- Liked Trips -->
+            <div class="liked-trips p-3">
+                <h5><b>Liked Trips:</b></h5>
+                <% if (likedTrips.length > 0) { %>
+                    <div class="liked-trips-container">
+                        <div id="likedTripsCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <% likedTrips.forEach((trip, index) => { %>
+                                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                        <a href="/trip-details/<%= trip.post_id %>">
+                                            <img src="<%= trip.image_path || '/images/default-trip.jpg' %>" class="d-block w-100 carousel-image" alt="<%= trip.title %>">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h5><%= trip.title %></h5>
+                                                <p><%= trip.country %></p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                <% }) %>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#likedTripsCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#likedTripsCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <p>You haven't liked any trips yet.</p>
+                <% } %>
             </div>
+
+            <!-- Past Trips -->
+            <div class="past-trips p-3">
+                <h5><b>Past Trips:</b></h5>
+                <% if (pastTrips.length > 0) { %>
+                    <div class="past-trips-container">
+                        <button class="scroll-btn prev-btn">&lt;</button>
+                        <div class="past-trips-slider">
+                            <% pastTrips.forEach(trip => { %>
+                                <div class="past-trip-card">
+                                    <a href="/trip-details/<%= trip.trip_id %>">
+                                        <img src="<%= trip.image_path %>" alt="<%= trip.title %>">
+                                        <p><b><%= trip.title %></b><br>(<%= trip.trip_start_date %> - <%= trip.trip_end_date %>)</p>
+                                    </a>
+                                </div>
+                            <% }); %>
+                        </div>
+                        <button class="scroll-btn next-btn">&gt;</button>
+                    </div>
+                <% } else { %>
+                    <p>No past trips recorded yet.</p>
+                <% } %>
+            </div>           
+
         </div>
-        <script src="/js/bootstrap.bundle.min.js"></script>    
-    </body>
-    <footer class="footer p-3 border-top">
-        <div class="ft-container text-center">
-            <p>&copy; 2025 Travel Itinerary Planner from Team 86. All Rights Reserverd</p>
-            <div class="d-flex justify-content-center">
-                <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
-                <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
-                <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
-            </div>
+        
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer p-3 border-top text-center text-white">
+        <p>&copy; 2025 Travel Itinerary Planner from Team 86. All Rights Reserved</p>
+        <div class="d-flex justify-content-center">
+            <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
+            <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
+            <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
         </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuToggle = document.querySelector(".menu-toggle");
+            const navButtons = document.querySelector(".nav-buttons");
+
+            menuToggle.addEventListener("click", function () {
+                navButtons.classList.toggle("active");
+            });
+
+            window.addEventListener("resize", function () {
+                if (window.innerWidth >= 420) {
+                    navButtons.classList.remove("active");
+                }
+            });
+        });
+
+        function redirectToHome() 
+        {
+        window.location.href = "/"
+        }
+
+        function redirectToGuides() 
+        {
+        window.location.href = "/travel-guide"
+        }
+    </script>
+
+    <!-- CSS Styling -->
     <style>
         html, body{
             height: 100%;
@@ -55,6 +170,7 @@
 
         .container-start{
             background-color: pink;
+            box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.1)
         }
 
         .btn{
@@ -67,11 +183,12 @@
         }
 
         body{
-            background: white;
+            background-color: white;
         }
 
         .main-content{
             flex: 1;
+            background-color: rgb(254, 252, 253);
         }
 
         .footer{
@@ -81,5 +198,261 @@
         .ft-container p{
             color: white;
         }
+
+        .trip-card 
+        {
+            width: 250px;
+            margin: 10px;
+            text-align: center;
+            background: pink;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 10px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .trip-card:hover 
+        {
+            transform: scale(1.05);
+        }
+
+        .trip-card a 
+        {
+            text-decoration: none;
+            color: black;
+        }
+
+        .trip-card img 
+        {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .liked-trips-container{
+            padding: 25px;
+            background-color: pink;
+            border-radius: 10px;
+        }
+
+        .carousel-inner
+        {
+            background-color: pink;
+            border-radius: 10px;
+        }
+
+        .carousel 
+        {
+            margin: 0;
+            padding: 0;
+            max-width: 1600px; 
+            background-color: rgb(255, 254, 255);
+            /* box-shadow: 0px 1px 5px black; */
+            border-radius: 10px; 
+        }
+
+        .carousel-item 
+        {
+            text-align: center;
+        }
+
+        .carousel-image 
+        {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+.past-trips-container {
+display: flex;
+align-items: center;
+justify-content: center;
+position: relative;
+overflow: hidden;
+width: 100%;
+margin: auto;
+background: rgb(254, 254, 254);
+border-radius: 10px;
+padding: 10px;
+/* box-shadow: 0px 1px 5px black; */
+}
+
+.past-trips-slider {
+    display: flex;
+    gap: 15px;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 97%;
+    scrollbar-width: none;
+    padding: 10px;
+}
+
+.past-trips-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.past-trip-card {
+    min-width: 250px;
+    height: 300px;
+    flex: 0 0 auto;
+    text-align: center;
+    background: pink;
+    padding: 10px 0px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.past-trip-card:hover {
+    transform: scale(1.05);
+}
+
+.past-trip-card a{
+    text-decoration: none;
+    color: black;
+}
+
+.past-trip-card p{
+    padding: 15px 0px 0px 0px;
+}
+
+.past-trip-card img {
+    width: 93%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Style the Scroll Buttons */
+.scroll-btn {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 24px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    opacity: 0.8;
+    transition: background 0.3s;
+}
+
+.scroll-btn:hover {
+    background: rgba(0, 0, 0, 1);
+}
+
+.prev-btn {
+    left: -10px;
+}
+
+.next-btn {
+    right: -10px;
+}
+
+/* Default: Hide navigation buttons on small screens */
+@media (max-width: 420px) {
+    .nav-buttons {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 110px;
+        right: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    /* Show buttons when toggle is active */
+    .nav-buttons.active {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Show the menu toggle below 420px */
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .carousel 
+        {
+            margin: 0;
+            padding: 0;
+            max-width: 1600px; 
+            background-color: rgb(255, 254, 255);
+            box-shadow: 0px 1px 5px black;
+            border-radius: 10px; 
+        }
+
+        .carousel-image 
+        {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+}
+
+@media (min-width: 421px) and (max-width: 603px) {
+    .nav-buttons {
+        visibility: visible;
+        opacity: 1;
+        position: static;
+        background: none;
+        box-shadow: none;
+        flex-direction: row;
+    }
+
+    .menu-toggle {
+        display: none;
+    }
+    .carousel 
+        {
+            margin: 0;
+            padding: 0;
+            max-width: 1600px; 
+            background-color: rgb(255, 254, 255);
+            box-shadow: 0px 1px 5px black;
+            border-radius: 10px; 
+        }
+
+        .carousel-image 
+        {
+            width: 100%;
+            height: 430px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+}
+
+/* Above 420px: Show buttons normally, hide toggle button */
+@media (min-width: 604px) {
+    .nav-buttons {
+        visibility: visible;
+        opacity: 1;
+        position: static;
+        background: none;
+        box-shadow: none;
+        flex-direction: row;
+    }
+
+    .menu-toggle {
+        display: none;
+    }
+}
+
     </style>
+</body>
 </html>

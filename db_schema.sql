@@ -85,7 +85,33 @@ CREATE TABLE IF NOT EXISTS blog_post_comments (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+--- Manage-Trips Start ---
 
+CREATE TABLE IF NOT EXISTS upcoming_trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS past_trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT,
+    moved_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Date it was moved from upcoming_trips
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+--- Manage-Trips End ---
 
 -- Insert default users
 INSERT INTO users (full_name, username, password, phone) 
@@ -112,6 +138,13 @@ VALUES
     (1, 'Wine Tasting Tour', '2025-06-18 14:00:00', 'Tuscany, Italy', 'Don’t forget to book a driver.'),
     (2, 'Hike the Blue Ridge Trail', '2025-07-21 08:00:00', 'Blue Ridge Mountains, USA', 'Pack water and snacks');
 
+
+-- Insert demo data into blog_posts
+INSERT INTO blog_posts (user_id, title, content) VALUES
+(1, 'Exploring the Hidden Gems of Paris', 'Discover charming cafes, local markets, and picturesque streets beyond the Eiffel Tower.'),
+(2, 'A Foodie''s Guide to Tokyo', 'Indulge in the diverse culinary scene of Tokyo, from Michelin-starred restaurants to hidden ramen shops.'),
+(1, 'Adventure in the Amazon Rainforest', 'Experience the breathtaking biodiversity and immerse yourself in the wonders of the Amazon.'),
+(2, 'Island Hopping in Greece', 'Explore the stunning beaches, ancient ruins, and vibrant nightlife of the Greek Islands.');
 
 -- Insert demo data into blog_posts
 INSERT INTO blog_posts (user_id, title, content, country) VALUES
@@ -156,6 +189,18 @@ WHERE bp.title IN (
 )
 AND u.username IN ('john_doe', 'jane_doe');
 
+--- Manage Trips Dummy Data ---
 
+-- Insert sample upcoming trips
+INSERT INTO upcoming_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
+(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
+(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
+(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
 
-COMMIT;
+-- Insert sample past trips
+INSERT INTO past_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
+(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
+(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
+(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
+
+commit;
