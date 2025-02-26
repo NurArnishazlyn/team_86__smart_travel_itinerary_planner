@@ -80,6 +80,10 @@ app.use('/travel-guide', travelGuideRouter);
 const manageTripsRoutes = require("./routes/manage-trips");
 app.use('/manage-trips', manageTripsRoutes);
 
+// Itinerary Page
+const itineraryPageRoutes = require("./routes/itinerary");
+app.use('/itinerary', itineraryPageRoutes);
+
 // Deals/Promotions
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);
