@@ -189,15 +189,6 @@
                     return false;
                 }
 
-                // Validate Username Exists
-                if (username.) {
-                    console.log("Username validation failed. Error: Username already exists!"); // Debugging
-                    errorMsg.innerHTML = "Username already exists!";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
                 // Validate Email
                 if (!emailRegex.test(email)) {
                     console.log("Email validation failed. Error: Invalid email format!"); // Debugging
