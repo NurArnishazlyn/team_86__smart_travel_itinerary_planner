@@ -25,11 +25,12 @@
         <!-- Main Content -->
         <div class="main-content bg-white text-center p-3">
             <!-- Search Bar -->
-            <div class="search-container mb-3">
+            <div class="search-container mb-4">
                 <input type="text" id="searchBar" class="search-bar" placeholder="Search for a City or Country">
             </div>
 
             <!-- Main Map Section -->
+            <h4 class="text-center">Map Overview</h4>
             <div id="map"></div>
 
             <!-- Hotel Viewer Map -->
@@ -38,13 +39,11 @@
                 <div id="hotel-map"></div>
             </div>
 
-            <!-- Date Selector -->
-            <div class="date-selector mt-4">
-                <h5 class="text-center">Travel Dates</h5>
-                <div class="date-picker d-flex justify-content-center">
-                    <input type="date" class="form-control me-2" id="checkin">
-                    <input type="date" class="form-control" id="checkout">
-                </div>
+            <!-- Hotel Listings Section -->
+            <div id="hotel-listings" class="mt-4">
+                <h4 class="text-center">Hotel Pricing Estimates</h4>
+                <!-- Container for the hotel cards -->
+                <div class="hotel-card-container d-flex justify-content-center flex-wrap"></div>
             </div>
         </div>
     </div>
@@ -56,7 +55,7 @@
             <div class="d-flex justify-content-center">
                 <a href="/" class="me-3 text-white"><i class="bi bi-facebook"></i></a>
                 <a href="/" class="me-3 text-white"><i class="bi bi-instagram"></i></a>
-                <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x"></i></a>
+                <a href="/" class="me-3 text-white"><i class="bi bi-twitter-x\"></i></a>
             </div>
         </div>
     </footer>
@@ -69,9 +68,9 @@
         function initMap() {
             // Main Map - Satellite View with Labels
             map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 19, // Higher zoom for closer view
+                zoom: 17,
                 center: selectedLocation,
-                mapTypeId: 'hybrid' // Satellite view with labels
+                mapTypeId: 'hybrid'
             });
 
             new google.maps.Marker({
@@ -82,6 +81,7 @@
 
             service = new google.maps.places.PlacesService(map);
 
+            // Listen for Enter key to trigger search
             document.getElementById("searchBar").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
@@ -89,17 +89,14 @@
                 }
             });
 
-            document.getElementById("checkin").addEventListener("change", fetchHotels);
-            document.getElementById("checkout").addEventListener("change", fetchHotels);
-
-            // Hotel Viewer Map - More Zoomed Out
+            // Hotel Viewer Map
             hotelMap = new google.maps.Map(document.getElementById("hotel-map"), {
-                zoom: 17, // More zoomed out than main map
+                zoom: 15,
                 center: selectedLocation,
-                mapTypeId: 'hybrid' // Satellite view with labels
+                mapTypeId: 'hybrid'
             });
 
-            fetchHotels(); // Load hotels when page loads
+            fetchHotels();
         }
 
         function searchLocation(location, map) {
@@ -108,13 +105,12 @@
                 if (status === "OK") {
                     selectedLocation = results[0].geometry.location;
                     map.setCenter(selectedLocation);
-                    hotelMap.setCenter(selectedLocation); // Sync but keep hotel map more zoomed out
+                    hotelMap.setCenter(selectedLocation);
                     new google.maps.Marker({
                         map: map,
                         position: selectedLocation
                     });
-
-                    fetchHotels(); // Fetch hotels when location changes
+                    fetchHotels();
                 } else {
                     alert("Location not found: " + status);
                 }
@@ -124,20 +120,21 @@
         function fetchHotels() {
             const request = {
                 location: selectedLocation,
-                radius: 500, // 500m radius to capture more hotels
+                radius: 1000,
                 type: "lodging"
             };
 
             service.nearbySearch(request, function(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     displayHotelsOnMap(results);
+                    displayHotelsAsCards(results);
                 }
             });
         }
 
         function displayHotelsOnMap(hotels) {
             hotelMap.setCenter(selectedLocation);
-            hotelMap.setZoom(17); // Ensures a more zoomed-out view
+            hotelMap.setZoom(15);
 
             hotels.forEach(hotel => {
                 new google.maps.Marker({
@@ -145,6 +142,34 @@
                     map: hotelMap,
                     title: hotel.name
                 });
+            });
+        }
+
+        // Updated to show up to 10 hotels & standardized images
+        function displayHotelsAsCards(hotels) {
+            const hotelList = document.querySelector(".hotel-card-container");
+            hotelList.innerHTML = "";
+
+            // Show 12 hotels for more variety
+            hotels.slice(0, 10).forEach((hotel) => {
+                let hotelCard = `
+                    <div class="hotel-card border rounded p-4 m-3 text-center">
+                        <h5 class="fw-bold">${hotel.name}</h5>
+                        <img
+                            src="${hotel.photos ? hotel.photos[0].getUrl() : '/images/no-image.png'}"
+                            class="img-fluid rounded"
+                            alt="Hotel Image"
+                        >
+                        <p class="mt-2">Rating: ${hotel.rating ? hotel.rating : "N/A"} ⭐</p>
+                        <p class="fw-bold">Estimated Price: SGD ${Math.floor(Math.random() * 250) + 50} per night</p>
+                        <div>
+                            <button style="background: none; border: none; cursor: pointer;">
+                                <i class="bi bi-heart" style="color: red; font-size: 1.3rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                hotelList.innerHTML += hotelCard;
             });
         }
     </script>
@@ -200,23 +225,45 @@
             color: white;
         }
 
-        /* Search Bar */
         .search-container {
             display: flex;
             justify-content: center;
         }
 
         .search-bar {
-            width: 50%;
-            padding: 10px;
+            width: 60%;
+            padding: 15px;
             border: 2px solid gray;
             border-radius: 15px;
-            font-size: 18px;
+            font-size: 20px;
             text-align: center;
             background-color: white;
         }
 
-        /* Adjusted Map Styling */
+        .hotel-card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        /* Standard card size + standard image size to align images */
+        .hotel-card {
+            width: 300px;
+            height: 480px; /* Fixed height so images line up */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Fix image height so they align horizontally */
+        .hotel-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
         #map, #hotel-map {
             width: 80%;
             height: 500px;
@@ -226,20 +273,6 @@
             border: 2px solid #ddd;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
         }
-
-        /* Date Selector */
-        .date-selector {
-            background-color: #f8f8f8;
-            padding: 15px;
-            border-radius: 10px;
-            width: 50%;
-            margin: auto;
-        }
-
-        .date-picker input {
-            width: 45%;
-        }
     </style>
-
 </body>
 </html>
