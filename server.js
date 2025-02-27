@@ -91,6 +91,10 @@ app.use('/hotels', hotelsRouter); // Use the hotels router
 const contactRoutes = require('./routes/contact');
 app.use('/contact', contactRoutes);
 
+// Reviews
+const reviewsRoutes = require("./routes/reviews");
+app.use("/reviews", reviewsRoutes);
+
 // Logout 
 app.get("/logout", (req, res) => {
     req.session.destroy((err) => {
