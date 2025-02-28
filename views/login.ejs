@@ -77,11 +77,26 @@
             <a href="/">
                 <img src="/images/logo.png" alt="Logo" class="logo">
             </a>
+
+                        <!-- Menu Toggle Button (☰) for small screens -->
+            <button class="menu-toggle d-lg-none">☰</button>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <button class="btn me-2 text-white" onclick="window.location.href='/travel-guide'">Guides</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/hotels'">Hotels</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/deals'">Promotions</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/contact'">Contact Us</button>
+                <a href="<%= user ? '/logout' : '/login' %>" class="btn me-2 text-white">
+                    <%= user ? `Logout (${user.username})` : "Log In / Sign Up" %>
+                </a>
+            </div>
         </div>
 
         <!-- Login Section -->
         <div class="d-flex justify-content-center align-items-center min-vh-100">
         <div class="card p-4 shadow-lg" style="width: 350px;">
+        </br>
             <h2 class="text-center mb-3">Login</h2>
 
             <!-- Error Message -->
@@ -112,6 +127,7 @@
                 <small>Don't have an account? <a href="/register" class="text-decoration-none text-primary">Sign Up</a></small></br>
                 <small><a href="/" class="text-decoration-none text-primary">Back to Home</a></small>
             </div>
+        </br>
         </div>
     </div>
 
