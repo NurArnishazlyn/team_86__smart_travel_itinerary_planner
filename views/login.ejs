@@ -132,39 +132,27 @@
 
     <!-- Background Image Change Script -->
     <script>
-        document.getElementById("toggle-password").addEventListener("click", function () {
-            const passwordField = document.getElementById("loginPassword");
-            const eyeIcon = document.getElementById("toggle-password");
-
-            // Toggle the type of the password field
-            if (passwordField.type === "password") {
-                passwordField.type = "text"; // Show password
-                eyeIcon.classList.remove("bi-eye-slash");
-                eyeIcon.classList.add("bi-eye"); // Change icon to eye
-            } else {
-                passwordField.type = "password"; // Hide password
-                eyeIcon.classList.remove("bi-eye");
-                eyeIcon.classList.add("bi-eye-slash"); // Change icon to eye-slash
-            }
+        // Toggle password visibility
+        document.getElementById("toggle-password").addEventListener("click", () => {
+            const pwd = document.getElementById("loginPassword");
+            const icon = document.getElementById("toggle-password");
+            pwd.type = pwd.type === "password" ? "text" : "password";
+            icon.classList.toggle("bi-eye");
+            icon.classList.toggle("bi-eye-slash");
         });
 
-        const images = [
-            "/images/p1.jpg",
-            "/images/p2.jpg",
-            "/images/p3.jpg"
-        ];
-        
+        // Background image slideshow
+        const images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"];
+        const wrapper = document.querySelector(".wrapper");
         let index = 0;
-        function changeBackground() {
-            document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
+
+        setInterval(() => {
+            wrapper.style.backgroundImage = `url('${images[index]}')`;
             index = (index + 1) % images.length;
-        }
+        }, 10000);
 
-        // Change background every 10 seconds
-        setInterval(changeBackground, 10000);
-
-        // Set initial background image
-        changeBackground();
+        // Set initial background
+        wrapper.style.backgroundImage = `url('${images[0]}')`;
     </script>
 </body>
 </html>
