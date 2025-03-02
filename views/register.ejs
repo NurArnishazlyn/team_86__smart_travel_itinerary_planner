@@ -74,11 +74,26 @@
             <a href="/">
                 <img src="/images/logo.png" alt="Logo" class="logo">
             </a>
+
+            <!-- Menu Toggle Button (☰) for small screens -->
+            <button class="menu-toggle d-lg-none">☰</button>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+                <button class="btn me-2 text-white" onclick="window.location.href='/travel-guide'">Guides</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/hotels'">Hotels</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/deals'">Promotions</button>
+                <button class="btn me-2 text-white" onclick="window.location.href='/contact'">Contact Us</button>
+                <a href="<%= user ? '/logout' : '/login' %>" class="btn me-2 text-white">
+                    <%= user ? `Logout (${user.username})` : "Log In / Sign Up" %>
+                </a>
+            </div>
         </div>
 
         <!-- Register Section -->
         <div class="d-flex justify-content-center align-items-center min-vh-100">
             <div class="card p-4 shadow-lg" style="width: 350px;">
+            </br>
                 <h2 class="text-center mb-3">Sign Up</h2>
 
                 <!-- Success & Error Message -->
@@ -118,8 +133,7 @@
                     <div class="text-center mb-3">
                         <small>
                             <input type="checkbox" id="terms" required>
-                            <label for="terms">I agree to the <a href="/terms" target="_blank">Terms and Conditions</a></label>
-                        </small>
+                            <label for="terms">I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms and Conditions</a></label>                        </small>
                     </div>
                     
                     <button type="submit" id="register-btn" class="btn w-100 text-white">Sign Up</button>
@@ -130,6 +144,7 @@
                   <small>Already have an account? <a href="/login" class="text-decoration-none">Login</a></small></br> 
                   <small><a href="/" class="text-decoration-none">Back to Home</a></small>
               </div>
+            </br>
             </div>
         </div>
 
@@ -153,163 +168,138 @@
     <!-- JavaScript Logic -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-    
-            // Regular expressions for validation
-            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
-    
-            // DOM elements
-            const errorMsg = document.getElementById("error-message");
-            const successMsg = document.getElementById("success-message");
-            const registerForm = document.getElementById("register-form");
-    
-            if (!errorMsg || !successMsg || !registerForm) {
-                console.error("Missing required elements in HTML");
-                return;
+            const form = document.getElementById("register-form"),
+                errorMsg = document.getElementById("error-message"),
+                successMsg = document.getElementById("success-message"),
+                images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"],
+                fields = ["username", "email", "phone", "newPassword", "confirmPassword"],
+                regex = {
+                    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    phone: /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/,
+                    password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+                };
+
+            let index = 0;
+            setInterval(() => document.querySelector(".wrapper").setAttribute("style", `background-image: url('${images[index++ % images.length]}')`), 10000);
+
+            function showMessage(msg, type) {
+                const el = type === "error" ? errorMsg : successMsg;
+                el.innerHTML = msg;
+                el.classList.remove("d-none");
             }
-    
-            // Function to validate form input
-            function validateForm(event) {
 
-                const username = document.getElementById("username").value;
-                const email = document.getElementById("email").value;
-                const phone = document.getElementById("phone").value;
-                const password = document.getElementById("newPassword").value;
-                const confirmPassword = document.getElementById("confirmPassword").value;
-
-                console.log("Validating form..."); // Debugging
-
-                // Validate Username
-                if (username.length < 3) {
-                    console.log("Username validation failed. Error: Username must be at least 3 characters long!"); // Debugging
-                    errorMsg.innerHTML = "Username must be at least 3 characters long!";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Validate Username Exists
-                if (username.) {
-                    console.log("Username validation failed. Error: Username already exists!"); // Debugging
-                    errorMsg.innerHTML = "Username already exists!";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Validate Email
-                if (!emailRegex.test(email)) {
-                    console.log("Email validation failed. Error: Invalid email format!"); // Debugging
-                    errorMsg.innerHTML = "Invalid email format! E.g. user@example.com";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Validate Phone Number
-                if (!phoneRegex.test(phone)) {
-                    console.log("Phone validation failed. Error: Invalid phone number format!"); // Debugging
-                    errorMsg.innerHTML = "Invalid phone number format! E.g. +(65)XXXXXXXX";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Validate Password
-                if (!passwordRegex.test(password)) {
-                    console.log("Password validation failed. Error: Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)"); // Debugging
-                    errorMsg.innerHTML = "Password must be:<br>- At least 8 characters long<br>- Include an uppercase letter<br>- Include a lowercase letter<br>- Include a number<br>- Include a special character (@$!%*?&)";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
-
-                // Validate Passwords Match
-                if (password !== confirmPassword) {
-                    console.log("Confirm Password validation failed. Error: Passwords do not match!"); // Debugging
-                    errorMsg.innerHTML = "Passwords do not match!";
-                    errorMsg.classList.remove("d-none");
-                    event.preventDefault();
-                    return false;
-                }
+            function validate() {
+                const values = Object.fromEntries(fields.map(id => [id, document.getElementById(id).value]));
+                if (values.username.length < 3) return showMessage("Username must be at least 3 characters!", "error");
+                if (!regex.email.test(values.email)) return showMessage("Invalid email format!", "error");
+                if (!regex.phone.test(values.phone)) return showMessage("Invalid phone number format!", "error");
+                if (!regex.password.test(values.newPassword)) return showMessage("Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character!", "error");
+                if (values.newPassword !== values.confirmPassword) return showMessage("Passwords do not match!", "error");
 
                 errorMsg.classList.add("d-none");
+                showMessage("Registration successful! Redirecting...", "success");
+                setTimeout(() => window.location.href = "/redirecting", 30000);
+                return true;
+            }
 
-                // Show success message 
-                console.log("All validations passed."); // Debugging
-                successMsg.innerHTML = "Registration successful! Redirecting to login page...";
-                successMsg.classList.remove("d-none");
+            form.addEventListener("submit", e => validate() || e.preventDefault());
 
-                // Set a timeout before redirecting to "redirecting" page
-                setTimeout(() => {
-                    window.location.href = "/redirecting"; // Redirect to a temporary page
-                    console.log("Redirecting to redirecting page...");
-                }, 30 * 60 * 1000);  // 30 minutes
+            document.getElementById("toggle-password").addEventListener("click", () => {
+                const pwd = document.getElementById("newPassword");
+                const icon = document.getElementById("toggle-password");
+                pwd.type = pwd.type === "password" ? "text" : "password";
+                icon.classList.toggle("bi-eye");
+                icon.classList.toggle("bi-eye-slash");
+            });
 
-                return true;  // Allow form submission
-            }
-    
-            // Function to display error messages
-            function showError(message) {
-                errorMsg.style.display = "block";
-                errorMsg.innerHTML = message;
-            }
-    
-            // Function to display success message
-            function showSuccess(message) {
-                successMsg.style.display = "block";
-                successMsg.innerHTML = message;
-            }
-    
-            // Attach event listener for form submission
-            registerForm.addEventListener("submit", function(event) {
-                console.log("Form submit event triggered.");
-                
-                // Validate the form
-                const isValid = validateForm(event);
-                if (!isValid) {
-                    console.log("Validation failed. Form not submitted.");
-                    event.preventDefault();  // Prevent form from submitting if validation fails
-                } else {
-                    console.log("Validation successful. Form submitted.");
-                }
+            document.getElementById("toggle-confirm-password").addEventListener("click", () => {
+                const pwd = document.getElementById("confirmPassword");
+                const icon = document.getElementById("toggle-confirm-password");
+                pwd.type = pwd.type === "password" ? "text" : "password";
+                icon.classList.toggle("bi-eye");
+                icon.classList.toggle("bi-eye-slash");
             });
-    
-            // Toggle Password Visibility
-            function togglePasswordVisibility(inputId, iconId) {
-                const passwordField = document.getElementById(inputId);
-                const eyeIcon = document.getElementById(iconId);
-    
-                const isPassword = passwordField.type === "password";
-                passwordField.type = isPassword ? "text" : "password";
-                eyeIcon.classList.toggle("bi-eye-slash", isPassword);
-                eyeIcon.classList.toggle("bi-eye", !isPassword);
-            }
-    
-            // Attach event listeners to toggle password visibility
-            document.getElementById("toggle-password").addEventListener("click", function () {
-                togglePasswordVisibility("newPassword", "toggle-password");
-            });
-    
-            document.getElementById("toggle-confirm-password").addEventListener("click", function () {
-                togglePasswordVisibility("confirmPassword", "toggle-confirm-password");
-            });
-    
-            // Background image array
-            const images = ["/images/p1.jpg", "/images/p2.jpg", "/images/p3.jpg"];
-            let index = 0;
-    
-            // Function to change background image
-            function changeBackground() {
-                document.querySelector(".wrapper").style.backgroundImage = `url('${images[index]}')`;
-                index = (index + 1) % images.length;
-            }
-    
-            // Change background every 10 seconds
-            setInterval(changeBackground, 10000);
-            changeBackground();  // Set initial background image
         });
     </script>
+
+    <!-- Modal for Terms and Conditions -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5>1. Introduction</h5>
+                    <p>Welcome to <strong>Smart Travel Itinerary Planner</strong>! By using our services and website, you agree to these Terms and Conditions. These terms apply to all users accessing or using the platform, including visitors and registered members. If you do not agree to these terms, you must refrain from using our services.</p>
+                
+                    <h5>2. Account Registration and Security</h5>
+                    <p>To use certain features of our platform, you must create an account. You agree to provide accurate, up-to-date, and complete information during registration. It is your responsibility to maintain the confidentiality of your account credentials (username and password). You must notify us immediately if you suspect unauthorized access to your account.</p>
+                
+                    <h5>3. Use of Service</h5>
+                    <p>Our service allows you to plan and organize travel itineraries, including:</p>
+                    <ul>
+                        <li>Adding destinations and activities.</li>
+                        <li>Scheduling transportation and accommodations.</li>
+                        <li>Sharing itineraries with others.</li>
+                        <li>Customizing travel plans.</li>
+                    </ul>
+                    <p>You agree to use the service solely for lawful purposes and not to engage in any activity that could harm the platform, its users, or its content.</p>
+                
+                    <h5>4. Content Submission</h5>
+                    <p>By submitting or uploading any content, such as travel destinations, photos, or itineraries, you grant <strong>Smart Travel Itinerary Planner</strong> a worldwide, royalty-free license to use, modify, and display the content within the platform. You confirm that you hold the necessary rights to the content you submit and that it does not infringe on third-party rights.</p>
+                
+                    <h5>5. Privacy and Data Protection</h5>
+                    <p>We value your privacy and are committed to protecting your personal information. Our <a href="/privacy-policy">Privacy Policy</a> outlines how we collect, use, and safeguard your data. By using our service, you consent to our data practices as described in the privacy policy.</p>
+                
+                    <h5>6. Payment and Fees</h5>
+                    <p>Certain premium features of <strong>Smart Travel Itinerary Planner</strong> may require payment. All fees for paid features are clearly displayed in the app, and you agree to pay all applicable fees associated with your use of those features. Payments will be processed via secure third-party payment processors.</p>
+                
+                    <h5>7. User Conduct</h5>
+                    <p>As a user of the platform, you agree not to engage in:</p>
+                    <ul>
+                        <li>Spamming, phishing, or any unlawful activities.</li>
+                        <li>Uploading harmful or offensive content.</li>
+                        <li>Violating the intellectual property rights of others.</li>
+                        <li>Disrupting or damaging the platform or services provided.</li>
+                    </ul>
+                    <p>Failure to comply with these guidelines may result in account suspension or termination.</p>
+                
+                    <h5>8. Modifications and Updates</h5>
+                    <p>We reserve the right to modify, suspend, or discontinue any aspect of the service at any time, including features, pricing, and terms. We will notify users of significant changes, and your continued use of the platform after such modifications constitutes your acceptance of the new terms.</p>
+                
+                    <h5>9. Third-Party Links and Services</h5>
+                    <p>Our platform may contain links to third-party websites or services. We are not responsible for the content, products, or services provided by these third parties. You agree to use these external resources at your own risk.</p>
+                
+                    <h5>10. Disclaimers</h5>
+                    <p><strong>Smart Travel Itinerary Planner</strong> is provided "as is," with no warranties or representations. We do not guarantee the accuracy, reliability, or availability of the service. We are not liable for any damages arising from your use of the platform, including loss of data or profits.</p>
+                
+                    <h5>11. Limitation of Liability</h5>
+                    <p>To the maximum extent permitted by law, <strong>Smart Travel Itinerary Planner</strong> and its affiliates are not responsible for any direct, indirect, incidental, special, or consequential damages that may arise from using or being unable to use the platform.</p>
+                
+                    <h5>12. Termination of Account</h5>
+                    <p>We reserve the right to suspend or terminate your account at our discretion if you violate any of these Terms and Conditions. You can also request to deactivate your account at any time by contacting our support team.</p>
+                
+                    <h5>13. Governing Law</h5>
+                    <p>These Terms and Conditions shall be governed by and construed in accordance with the laws of [your country or jurisdiction]. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts located in [your jurisdiction].</p>
+                
+                    <h5>14. Indemnification</h5>
+                    <p>You agree to indemnify and hold <strong>Smart Travel Itinerary Planner</strong> harmless from any claims, damages, or losses arising from your use of the platform or your violation of these Terms and Conditions.</p>
+                
+                    <h5>15. Modification of Terms</h5>
+                    <p>We may update these Terms and Conditions from time to time. Any changes will be posted on this page, and the "Last Updated" date will be revised. Please review these terms periodically to stay informed of any changes.</p>
+                
+                    <h5>16. Contact Information</h5>
+                    <p>If you have any questions or concerns about these Terms and Conditions, please contact us at:</p>
+                    <p><strong>Travel Itinerary Planner from Team 86</strong><br>
+                       Email: <a href="mailto:travel_itinerary_planner_86@gmail.com">travel_itinerary_planner_86@gmail.com</a><br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>     
 </body>
 </html>

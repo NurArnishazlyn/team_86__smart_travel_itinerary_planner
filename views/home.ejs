@@ -67,15 +67,14 @@
             transition: 0.3s;
         }
 
-        /* Carousel Styles */
+        /* Carousel & Travel Planner */
         .carousel {
             margin: 20px auto;            /* Center the carousel with margins */
-            width: 80%;                   /* Set carousel width */
+            width: 100%;                   /* Set carousel width */
             max-width: 1000px;            /* Limit maximum width */
             box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Add shadow around carousel */
             border-radius: 8px;           /* Add rounded corners */
             overflow: hidden;             /* Ensure corners are rounded properly */
-            margin-bottom: 150px;        
         }
 
         .carousel img {
@@ -89,9 +88,13 @@
             background-color: rgba(0, 0, 0, 0.5); /* Dark semi-transparent background */
             border-radius: 50%;                   /* Round icons */
             padding: 10px;                         /* Add padding around icons */
-            margin-bottom: 150px;         
         }
-        
+
+        .carousel-travel-section {
+            margin-bottom: 250px; 
+        }
+
+        /* Features Section with Google Map */
         #map {
             width: 100%;
             height: 400px;
@@ -99,7 +102,106 @@
             margin-bottom: 150px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+        .features-section {
+            margin-bottom: 200px; 
+        }
+
+        /* Add space below the header */
+        .section-title {
+            margin-bottom: 60px;
+        }
+
+        /*  Reviews Section */
+        .review-card {
+            background: #ffe6ea; /* Soft pink background */
+            padding: 25px;
+            display: flex;
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #ffb6c1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .profile-img img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .review-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .review-title {
+            background: #ffb6c1;
+            padding: 8px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .stars {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            color: #ffd700;
+        }
+
+        .review-text {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: left;
+            max-width: 90%;
+        }
         
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            gap: 8px; /* Spacing between indicators */
+        }
+
+        .carousel-indicators .active {
+            background-color: #ff6384; /* Darker pink for active state */
+            opacity: 1;
+            transform: scale(1.2); /* Slightly larger active dot */
+        }
+
+        .reviewer-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .reviews-section {
+            margin-bottom: 200px; 
+        }
     </style>
 
 </head>
@@ -125,7 +227,7 @@
     <script src="/js/bootstrap.bundle.min.js"></script>    
 
 <!-- Carousel & Travel Planner Section -->
-<div class="container mt-5">
+<div class="container mt-5 carousel-travel-section">
     <div class="row align-items-center justify-content-center">
         <!-- Left Side: Travel Planner Text & Buttons -->
         <div class="col-md-4">
@@ -142,13 +244,13 @@
             <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img src="/images/image1.jpg" class="d-block w-100" alt="Slide 1">
+                        <img src="/images/home1.jpg" class="d-block w-100" alt="Slide 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="/images/image2.jpg" class="d-block w-100" alt="Slide 2">
+                        <img src="/images/home2.jpg" class="d-block w-100" alt="Slide 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="/images/image3.jpg" class="d-block w-100" alt="Slide 3">
+                        <img src="/images/home3.jpg" class="d-block w-100" alt="Slide 3">
                     </div>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -165,7 +267,7 @@
 </div>
 
 <!-- Features Section with Google Map -->
-<div class="container mt-5">
+<div class="container mt-5 features-section">
     <div class="row align-items-center">
         <!-- Left Side: Google Map -->
         <div class="col-md-6">
@@ -174,7 +276,7 @@
 
         <!-- Right Side: Features Text -->
         <div class="col-md-6 text-center text-md-start ps-4">
-            <h2 class="fw-bold">Everything on One Map!</h2>
+            <h2 class="fw-bold section-title">Everything on One Map!</h2>
             <p class="text-muted"><strong>Collaborative Planning</strong></p>
             <p>Plan trips with friends, share itineraries, and vote on activities together.</p>
             <p class="text-muted"><strong>Relive Travel Guides</strong></p>
@@ -182,6 +284,57 @@
         </div>
     </div>
 </div>
+
+<!-- Reviews Section -->
+<div class="container mt-5 reviews-section">
+    <h2 class="text-center fw-bold">Reviews</h2>
+    <p class="text-center text-muted">See what our travelers say!</p>
+    <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" id="reviews-container">
+            <!-- Reviews will be inserted dynamically -->
+        </div>
+        <div class="carousel-indicators" id="review-indicators"></div>
+    </div>
+</div>
+
+<script>
+fetch("/reviews")
+    .then(response => response.json())
+    .then(reviews => {
+        const container = document.getElementById("reviews-container");
+        const indicators = document.getElementById("review-indicators");
+
+        if (reviews.length === 0) {
+            container.innerHTML = "<p class='text-center text-muted'>No reviews yet.</p>";
+            return;
+        }
+
+        reviews.forEach((review, index) => {
+            const activeClass = index === 0 ? "active" : "";
+
+            container.innerHTML += `
+                <div class="carousel-item ${activeClass}">
+                    <div class="review-card">
+                        <div class="profile-img">
+                            <img src="${review.profile_img}" alt="${review.full_name}">
+                        </div>
+                        <div class="review-content">
+                            <h5 class="reviewer-name">${review.full_name}</h5> <!-- Person's Name -->
+                            <div class="review-title">${review.trip_title}</div>
+                            <div class="stars">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</div>
+                            <p class="review-text">${review.review_text}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            indicators.innerHTML += `
+                <button type="button" data-bs-target="#reviewCarousel" data-bs-slide-to="${index}" class="${index === 0 ? "active" : ""}" aria-label="Slide ${index + 1}"></button>
+            `;
+        });
+    })
+    .catch(error => console.error("Error fetching reviews:", error));
+</script>
 
 <script>
 

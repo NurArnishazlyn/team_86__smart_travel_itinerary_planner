@@ -109,6 +109,11 @@
 
     <h1>Travel Guide</h1>
 
+    <% if (user) { %>
+        <a href="/travel-guide/create-post" class="create-post-btn">Create New Post</a>
+      <% } %>
+
+
     <div class="country-buttons">
       <button onclick="filterPosts('Japan')">Japan</button>
       <button onclick="filterPosts('France')">France</button>

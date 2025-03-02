@@ -1,6 +1,31 @@
 const express = require('express');
 const router = express.Router();
 
+const multer = require('multer');
+const path = require('path');
+const { body, validationResult } = require('express-validator');
+
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'public/images'); // Uploads will be stored in 'public/uploads'
+  },
+  filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+
+router.get('/create-post', (req, res) => {
+  
+
+  res.render('create-post.ejs', { user: req.session.user });
+});
+
 router.get('/', (req, res) => {
   const userId = req.session.user?.id; // Get the user ID, if logged in
 
@@ -71,6 +96,8 @@ router.get('/:id', (req, res) => {
     }
   });
 });
+
+
 
 
 router.post('/:id/like', (req, res) => {
@@ -154,6 +181,68 @@ router.post('/:id/comment', (req, res) => {
          res.send({ success: true, message: 'Comment added successfully', newComment: { comment_id: commentId, username: username, comment_text: commentText} });
       });
   });
+});
+
+router.post('/submit-blog-post', upload.array('image', 10), async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.redirect('/login'); // Redirect if not logged in
+    }
+
+    const { title, country, content } = req.body;
+
+    // Get the user ID from the session
+    const userId = req.session.user.id;
+    const username = req.session.user.username;
+
+    // Insert the new blog post into the database
+    const insertPostQuery = `
+      INSERT INTO blog_posts (title, country, content, user_id, created_at)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `;
+
+    // Use a Promise to handle the asynchronous database operation
+    const postResult = await new Promise((resolve, reject) => {
+      db.run(insertPostQuery, [title, country, content, userId], function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastID); // Resolve with the newly inserted post_id
+        }
+      });
+    });
+    console.log('Blog post inserted:', postResult);
+
+    // Insert each image into the blog_post_images table
+    if(req.files && req.files.length > 0){
+        const imageInsertPromises = req.files.map((file) => {
+          const imagePath = `/images/${file.filename}`;
+          const insertImageQuery = `
+            INSERT INTO blog_post_images (post_id, image_path)
+            VALUES (?, ?)
+          `;
+
+          return new Promise((resolve, reject) => {
+            db.run(insertImageQuery, [postResult, imagePath], (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          });
+        });
+
+      // Wait for all image inserts to complete
+        await Promise.all(imageInsertPromises);
+    }
+
+
+    res.redirect('/travel-guide'); // Redirect to the travel guide page after successful submission
+  } catch (error) {
+    console.error('Error inserting blog post:', error);
+    res.status(500).send('Error creating blog post');
+  }
 });
 
 module.exports = router;
