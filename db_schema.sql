@@ -112,6 +112,98 @@ CREATE TABLE IF NOT EXISTS past_trips (
 
 --- Manage-Trips End ---
 
+--- Itinerary Page Start ---
+
+CREATE TABLE IF NOT EXISTS trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    trip_name TEXT NOT NULL,
+    description TEXT,
+    start_date DATE,
+    end_date DATE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS trip_members (
+    member_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    member_name TEXT NOT NULL,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS flights (
+    flight_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    departure_location TEXT NOT NULL,
+    arrival_location TEXT NOT NULL,
+    departure_datetime DATETIME NOT NULL,
+    arrival_datetime DATETIME NOT NULL,
+    transport_mode TEXT DEFAULT 'Flight',
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS hotels (
+    hotel_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    hotel_name TEXT NOT NULL,
+    check_in DATETIME NOT NULL,
+    check_out DATETIME NOT NULL,
+    price_per_night DECIMAL(10,2),
+    transport_details TEXT,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS restaurants (
+    restaurant_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    restaurant_name TEXT NOT NULL,
+    reviews INTEGER DEFAULT 0,
+    price_range TEXT NOT NULL,
+    votes INTEGER DEFAULT 0,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS restaurant_votes (
+    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    restaurant_id INTEGER NOT NULL,
+    vote_value INTEGER CHECK(vote_value IN (1, -1)), -- 1 for upvote, -1 for downvote
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (restaurant_id) REFERENCES restaurants(restaurant_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS shopping (
+    shopping_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    shop_name TEXT NOT NULL,
+    reviews INTEGER DEFAULT 0,
+    visit_time TEXT NOT NULL,
+    votes INTEGER DEFAULT 0,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS shopping_votes (
+    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    shopping_id INTEGER NOT NULL,
+    vote_value INTEGER CHECK(vote_value IN (1, -1)), -- 1 for upvote, -1 for downvote
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (shopping_id) REFERENCES shopping(shopping_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS city_center_transport (
+    transport_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trip_id INTEGER NOT NULL,
+    departure_location TEXT NOT NULL,
+    arrival_location TEXT NOT NULL,
+    transport_mode TEXT NOT NULL,
+    arrival_time TEXT,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE
+);
+
+--- Itinerary Page End ---
+
 -- Insert default users
 INSERT INTO users (full_name, username, password, phone) 
 VALUES 
@@ -188,6 +280,32 @@ WHERE bp.title IN (
 AND u.username IN ('john_doe', 'jane_doe');
 
 --- Manage Trips Dummy Data ---
+
+--- Itinerary Page Dummy Data ---
+
+INSERT INTO trips (user_id, trip_name, description, start_date, end_date) 
+VALUES (1, 'Tokyo Grad Trip 2025', 'A fun trip with friends', '2025-12-20', '2025-12-27');
+
+INSERT INTO flights (trip_id, departure_location, arrival_location, departure_datetime, arrival_datetime) 
+VALUES (1, 'Singapore Terminal 1', 'Narita Terminal 1', '2025-12-19 23:00:00', '2025-12-20 09:00:00');
+
+INSERT INTO hotels (trip_id, hotel_name, check_in, check_out, price_per_night, transport_details) 
+VALUES (1, 'Hotel Metropolitan Tokyo Marunouchi', '2025-12-20', '2025-12-27', 329, '8 min walk from Tokyo Station');
+
+INSERT INTO restaurants (trip_id, restaurant_name, reviews, price_range, votes) 
+VALUES (1, 'Tokyo Ramen Street', 958, '1000yen - 2000yen', 0);
+
+INSERT INTO restaurant_votes (user_id, restaurant_id, vote_value) 
+VALUES (1, 1, 1); -- 1 for upvote
+
+INSERT INTO shopping (trip_id, shop_name, reviews, visit_time, votes) 
+VALUES (1, 'Pokémon Center Tokyo', 958, '12:00pm - 1:30pm JST', 0);
+INSERT INTO shopping (trip_id, shop_name, reviews, visit_time, votes) 
+VALUES (1, 'Animate Ikebukuro', 1000, '3:00pm - 6:30pm JST', 0);
+INSERT INTO shopping (trip_id, shop_name, reviews, visit_time, votes) 
+VALUES (1, 'Meiji Jingu Shrine', 1500, '1:00pm - 3:30pm JST', 0);
+
+--- Itinerary Page Dummy Data ---
 
 -- Insert sample upcoming trips
 INSERT INTO upcoming_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
