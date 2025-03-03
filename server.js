@@ -64,6 +64,10 @@ app.get('/', (req,res) => {
     });
 });
 
+app.get('/itinerary', (req,res) => {
+    res.render('itinerary');
+})
+
 // Login 
 const loginRoutes = require('./routes/login');
 app.use('/login', loginRoutes);
@@ -79,6 +83,10 @@ app.use('/travel-guide', travelGuideRouter);
 // Manage Trips
 const manageTripsRoutes = require("./routes/manage-trips");
 app.use('/manage-trips', manageTripsRoutes);
+
+// // Itinerary Page
+// const itineraryPageRoutes = require("./routes/itinerary");
+// app.use('/itinerary', itineraryPageRoutes);
 
 // Deals/Promotions
 const dealsRoutes = require('./routes/deals');
