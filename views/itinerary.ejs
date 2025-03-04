@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <title>Manage Trips</title>
 </head>
 <body>
@@ -40,52 +41,65 @@
                 <div class="trip-details p-4 d-flex">
                     <div class="trip-info d-flex flex-column gap-3 p-5">
                         <div class="trip-members d-flex gap-3 p-3">
-                            <div class="member-name p-2 text-white"><h5>Neo</h5></div>
+                            <!-- <div class="member-name p-2 text-white"><h5>Neo</h5></div>
                             <div class="member-name p-2 text-white"><h5>Leo</h5></div>
                             <div class="member-name p-2 text-white"><h5>Teo</h5></div>
                             <div class="member-name p-2 text-white"><h5>Beo</h5></div>
                             <div class="member-name p-2 text-white"><h5>Jeo</h5></div>
-                            <h5>+ 5</h5>
+                            <h5>+ 5</h5> -->
+                            <% members.forEach(member => { %> 
+                                <div class="member-name p-2 text-white"><h5><%= member.member_name %></h5></div>   
+                            <%}) %>
+                            <% if (members.length > 5) { %>
+                                <h5>+ <%= members.length - 5 %></h5>
+                            <% } %>
                         </div>
                         <div class="trip-description p-auto mt-5">
-                            <p class="p-3 fs-5"><b>Description: </b>Summer Trip With Friends. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacinia felis sit amet ipsum pretium viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. </p>
+                            <p class="p-3 fs-5"><b>Description: </b><%= trip.description %></p>
                         </div>
                     </div>
                     <div class="trip-image p-3"> 
-                        <img src="/images/london-h.jpg" alt="trip-img">
+                        <img src= "<%= trip.image_path %>" alt="<%= trip.name %>">
                     </div>
                 </div>
-
+ 
                 <div class="flight-details p-4 d-flex justify-content-between gap-4">
                     <div class="flight-info d-flex flex-column gap-3 p-4">
                         <!-- Flight Section -->
+                        <% if (flight) { %>
                         <div class="flight d-flex flex-column p-0">
                             <div class="flight-top d-flex p-2">
                                 <h2 class="fs-4">Flight</h2>
                             </div>
                             <div class="p-2">
-                            <p>Singapore Terminal 1 -> NRT Terminal 1</p>
-                            <p>Departure: 19 December 2025, 11PM SGT</p>
-                            <p>Arrival: 20 December 2025, 9AM JST</p>
+                            <p><%= flight.departure %> -> <%= flight.arrival %></p>
+                            <p>Departure: <%= flight.departure_time %></p>
+                            <p>Arrival: <%= flight.arrival_time %></p>
                             </div>
                         </div>
+                        <% } else { %>
+                                <p class="text-center">No Flight Details Available For This Trip</p>
+                        <% } %>
                 
+                        <% if (center) { %>
                         <!-- City Center Section -->
                         <div class="city-center d-flex flex-column p-0">
                             <div class="city-top d-flex p-2">
                                 <h2 class="fs-4">Travelling To City Center</h2>
                             </div>
                             <div class="p-2">
-                            <p>NRT Terminal 1 -> Tokyo Station</p>
-                            <p>Transport: Skyliner</p>
-                            <p>Arrival Time: 10AM JST</p>
+                            <p><%= center.departure %> -> <%= center.arrival %></p>
+                            <p>Transport: <%= center.transport %></p>
+                            <p>Arrival Time: <%= center.arrival_time%></p>
                             </div>
+                            <% } else { %>
+                                <p class="text-center">No Details Available For This Trip</p>
+                             <% } %>
 
                             <!-- Voting Section -->
                             <div class="vote-section mt-3 d-flex align-items-center gap-3">
-                                <button class="btn btn-success vote-btn" data-vote="up">👍 <span class="upvote-count">0</span></button>
-                                <button class="btn btn-danger vote-btn" data-vote="down">👎 <span class="downvote-count">0</span></button>
-                                <p class="fs-5 mb-0">Voting: <span class="vote-average">0</span>/5</p>
+                                <button class="btn btn-success vote-btn upvote" data-vote="up">👍 <span class="upvote-count"><%= center.upvotes %></span></button>
+                                <button class="btn btn-danger vote-btn downvote" data-vote="down">👎 <span class="downvote-count"><%= center.downvotes %></span></button>
                             </div>
                         </div>
                     </div>
@@ -103,29 +117,23 @@
                             <h4>Food Poll</h4>
                         </div>
                         
-                        <!-- First Restaurant -->
-                        <div class="restaurant-1 d-flex align-items-center p-3">
-                            <div class="restaurant-text me-3">
-                                <p><b>Tokyo Ramen Street</b></p>
-                                <p>Reviews: 4.7/5</p>
-                                <p>Price: 1000yen - 2000yen</p>
-                            </div>
-                            <div class="restaurant-pic">
-                                <img src="/images/maldives-h.jpg" alt="Tokyo Ramen Street">
-                            </div>
-                        </div>
-                
-                        <!-- Second Restaurant -->
-                        <div class="restaurant-2 d-flex align-items-center p-3">
-                            <div class="restaurant-text me-3">
-                                <p><b>Soranoiro Nippon</b></p>
-                                <p>Reviews: 4.5/5</p>
-                                <p>Price: 1000yen - 2000yen</p>
-                            </div>
-                            <div class="restaurant-pic">
-                                <img src="/images/bali-h.jpg" alt="Soranoiro Nippon">
-                            </div>
-                        </div>
+                        <!-- Restaurants -->
+                        <% if (restaurants.length > 0) { %>
+                            <% restaurants.forEach(restaurant => { %>
+                                <div class="restaurant d-flex align-items-center p-3">
+                                    <div class="restaurant-text me-3">
+                                        <p><b><%= restaurant.name %></b></p>
+                                        <p>Reviews: <%= restaurant.rating %></p>
+                                        <p>Price: <%= restaurant.price %></p>
+                                    </div>
+                                    <div class="restaurant-pic">
+                                        <img src="<%= restaurant.image_path %>" alt="<%= restaurant.name %>">
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-center">No restaurants available for this trip.</p>
+                        <% } %>
 
                         <!-- Poll Bar -->
                         <div class="poll-section p-3 text-center">
@@ -259,25 +267,32 @@
                 
                 <div class="hotel-section d-flex gap-0">
                     <!-- Left Section: Hotel Details -->
-                    <div class="hotel-card p-0">
-                        <div class="hotel-header d-flex justify-content-between">
-                            <h5><b>Getting to Hotel</b></h5>
-                            <span class="more-options">...</span>
-                        </div>
-                        <div class="hotel-info">
-                            <p><b>Tokyo Station → Hotel Metropolitan Tokyo Marunouchi</b></p>
-                            <p>Check-in: 3:00pm JST</p>
-                            <p>Transport: 8 Min Walk from Tokyo Station</p>
-                            <p><b>Price:</b> SGD 329 Per Night</p>
-                        </div>
-                        <div class="hotel-footer d-flex justify-content-between align-items-center">
-                            <div class="votes">
-                                <button class="vote-btn upvote">⬆ 3</button>
-                                <button class="vote-btn downvote">⬇ 0</button>
-                                <span class="vote-score">3/5 Voted</span>
+                    <% if (hotels.length > 0) { %>
+                        <% hotels.forEach(hotel => { %>
+                            <div class="hotel-card p-0">
+                                <div class="hotel-header d-flex justify-content-between">
+                                    <h5>Getting to Hotel</h5>
+                                    <span class="more-options">...</span>
+                                </div>
+                                <div class="hotel-info">
+                                    <p><b><%= hotel.hotel_name %></b></p>
+                                    <p>Location: <%= hotel.hotel_location%></p>
+                                    <p>Check-in: <%= hotel.check_in %></p>
+                                    <p>Transport: <%= hotel.transport_details %></p>
+                                    <p><b>Price:</b> <%= hotel.price %></p>
+                                </div>
+                                <div class="hotel-footer d-flex justify-content-between align-items-center">
+                                    <div class="votes">
+                                        <button class="vote-btn upvote" data-hotel-id="<%= hotel.hotel_id %>">⬆</button>
+                                        <button class="vote-btn downvote" data-hotel-id="<%= hotel.hotel_id %>">⬇</button>
+                                        <span class="vote-score"><%= hotel.votes %>/5 Voted</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-center">No hotels available for this trip.</p>
+                    <% } %>                    
                 
                     <!-- Center Section: Map -->
                     <div class="hotel-map">
@@ -366,38 +381,38 @@
         ], {color: 'blue'}).addTo(map);
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-    let upvotes = 0;
-    let downvotes = 0;
+//     document.addEventListener("DOMContentLoaded", function () {
+//     let upvotes = 0;
+//     let downvotes = 0;
 
-    const upvoteButton = document.querySelector(".vote-btn[data-vote='up']");
-    const downvoteButton = document.querySelector(".vote-btn[data-vote='down']");
-    const upvoteCount = document.querySelector(".upvote-count");
-    const downvoteCount = document.querySelector(".downvote-count");
-    const voteAverage = document.querySelector(".vote-average");
+//     const upvoteButton = document.querySelector(".vote-btn[data-vote='up']");
+//     const downvoteButton = document.querySelector(".vote-btn[data-vote='down']");
+//     const upvoteCount = document.querySelector(".upvote-count");
+//     const downvoteCount = document.querySelector(".downvote-count");
+//     const voteAverage = document.querySelector(".vote-average");
 
-    upvoteButton.addEventListener("click", function () {
-        upvotes++;
-        upvoteCount.textContent = upvotes;
-        updateVoteAverage();
-    });
+//     upvoteButton.addEventListener("click", function () {
+//         upvotes++;
+//         upvoteCount.textContent = upvotes;
+//         updateVoteAverage();
+//     });
 
-    downvoteButton.addEventListener("click", function () {
-        downvotes++;
-        downvoteCount.textContent = downvotes;
-        updateVoteAverage();
-    });
+//     downvoteButton.addEventListener("click", function () {
+//         downvotes++;
+//         downvoteCount.textContent = downvotes;
+//         updateVoteAverage();
+//     });
 
-    function updateVoteAverage() {
-        let totalVotes = upvotes + downvotes;
-        if (totalVotes === 0) {
-            voteAverage.textContent = "0";
-        } else {
-            let avgRating = (upvotes / totalVotes) * 5;
-            voteAverage.textContent = avgRating.toFixed(1);
-        }
-    }
-});
+//     function updateVoteAverage() {
+//         let totalVotes = upvotes + downvotes;
+//         if (totalVotes === 0) {
+//             voteAverage.textContent = "0";
+//         } else {
+//             let avgRating = (upvotes / totalVotes) * 5;
+//             voteAverage.textContent = avgRating.toFixed(1);
+//         }
+//     }
+// });
 
 document.addEventListener("DOMContentLoaded", function () {
     let votesRamen = 5;
@@ -648,7 +663,7 @@ display: flex;
     border-radius: 15px;
 }
 
-.restaurant-1, .restaurant-2 {
+.restaurant {
     display: flex;
     justify-content: space-between; /* Align text and image side by side */
     align-items: center;
@@ -1037,5 +1052,6 @@ display: flex;
 }
 
     </style>
+<script src="/js/itinerary.js"></script>
 </body>
 </html>

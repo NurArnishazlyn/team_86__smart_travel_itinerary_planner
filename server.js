@@ -19,6 +19,8 @@ app.set('views', __dirname + '/views');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
+
 
 // Session
 app.use(
@@ -84,9 +86,12 @@ app.use('/travel-guide', travelGuideRouter);
 const manageTripsRoutes = require("./routes/manage-trips");
 app.use('/manage-trips', manageTripsRoutes);
 
-// // Itinerary Page
-// const itineraryPageRoutes = require("./routes/itinerary");
-// app.use('/itinerary', itineraryPageRoutes);
+// Itinerary Page
+const itineraryPageRoutes = require("./routes/itinerary");
+app.use('/itinerary', itineraryPageRoutes);
+
+const voteRoutes = require("./routes/vote");
+app.use('/vote', voteRoutes);
 
 // Deals/Promotions
 const dealsRoutes = require('./routes/deals');
