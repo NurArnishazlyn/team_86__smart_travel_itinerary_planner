@@ -9,18 +9,21 @@
     "clean-db": "rm database.db #remove the old database",
     "build-db-win": "sqlite3 database.db < db_schema.sql",
     "clean-db-win": "del database.db",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "author": "Simon Katan",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.10.0",
     "sqlite3": "^5.1.7"
   },
   "engines": {
