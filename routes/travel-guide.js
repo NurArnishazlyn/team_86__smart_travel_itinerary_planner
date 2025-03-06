@@ -47,7 +47,7 @@ router.get('/', (req, res) => {
   const queryParams = [userId]; // Parameters for the SQL query
 
   if (country && country !== 'All') {
-    sql += ` HAVING bp.country = ?`; // Modify the condition to use HAVING
+    sql += ` HAVING bp.country = ?`; 
     queryParams.push(country);
   }
   console.log(sql);
