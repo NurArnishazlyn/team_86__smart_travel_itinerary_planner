@@ -90,9 +90,6 @@ app.use('/manage-trips', manageTripsRoutes);
 const itineraryPageRoutes = require("./routes/itinerary");
 app.use('/itinerary', itineraryPageRoutes);
 
-const voteRoutes = require("./routes/vote");
-app.use('/vote', voteRoutes);
-
 // Deals/Promotions
 const dealsRoutes = require('./routes/deals');
 app.use('/deals', dealsRoutes);

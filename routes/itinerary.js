@@ -68,23 +68,24 @@ router.get("/:trip_id", (req, res) => {
         });
 });
 
-// Route to update votes
-router.post("/vote-hotel", (req, res) => {
-    const { hotel_id, vote_type } = req.body;
+// API to handle city center votes
+router.post("/vote/city-center", (req, res) => {
+    const { trip_id, voteType } = req.body;
 
-    const updateQuery =
-        vote_type === "up"
-            ? `UPDATE hotels SET votes = MIN(votes + 1, 5) WHERE hotel_id = ?`
-            : `UPDATE hotels SET votes = MAX(votes - 1, 0) WHERE hotel_id = ?`;
+    if (!trip_id || !voteType) {
+        return res.status(400).json({ error: "Missing required parameters." });
+    }
 
-    db.run(updateQuery, [hotel_id], function (err) {
+    const column = voteType == "up" ? "upvotes" : "downvotes";
+
+    // Update the database
+    const sql = `UPDATE city_center SET ${column} = ${column} + 1 WHERE trip_id = ?`;
+    db.run(sql, [trip_id], function (err) {
         if (err) {
-            console.error("Error updating vote:", err);
-            return res.status(500).json({ error: "Failed to update vote" });
+            return res.status(500).json({ error: "Database update failed." });
         }
-        res.json({ success: true });
+        return res.json({ success: true });
     });
 });
-
 
 module.exports = router;

@@ -26,6 +26,7 @@
                 <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
                 <button class="btn me-2 text-white">Hotels</button>
                 <button class="btn me-2 text-white">Promotions</button>
+                <button class="btn me-2 text-white" onclick="redirectToManage()">Manage-Trips</button>
             </div>
         </div>
 
@@ -98,8 +99,12 @@
 
                             <!-- Voting Section -->
                             <div class="vote-section mt-3 d-flex align-items-center gap-3">
-                                <button class="btn btn-success vote-btn upvote" data-vote="up">👍 <span class="upvote-count"><%= center.upvotes %></span></button>
-                                <button class="btn btn-danger vote-btn downvote" data-vote="down">👎 <span class="downvote-count"><%= center.downvotes %></span></button>
+                                <button class="btn btn-success vote-btn" data-vote="up" data-trip-id="<%= trip.trip_id %>">👍 
+                                    <span class="upvote-count"><%= center.upvotes %></span>
+                                </button>
+                                <button class="btn btn-danger vote-btn" data-vote="down" data-trip-id="<%= trip.trip_id %>">👎 
+                                    <span class="downvote-count"><%= center.downvotes %></span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -356,6 +361,11 @@
         function redirectToGuides() 
         {
         window.location.href = "/travel-guide"
+        }
+
+        function redirectToManage()
+        {
+        window.location.href = "/manage-trips"
         }
 
         document.addEventListener("DOMContentLoaded", function () {
