@@ -23,8 +23,8 @@
             <div class="nav-buttons">
                 <button class="btn me-2 text-white" onclick="redirectToHome()">Home</button>
                 <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
-                <button class="btn me-2 text-white">Hotels</button>
-                <button class="btn me-2 text-white">Promotions</button>
+                <button class="btn me-2 text-white" onclick="redirectToHotels()">Hotels</button>
+                <button class="btn me-2 text-white" onclick="redirectToPromotions()">Promotions</button>
             </div>
         </div>
 
@@ -144,6 +144,16 @@
         function redirectToGuides() 
         {
         window.location.href = "/travel-guide"
+        }
+
+        function redirectToHotels()
+        {
+        window.loaction.href = "/hotels"
+        }
+
+        function redirectToPromotions()
+        {
+        window.location.href = "/promotions"
         }
     </script>
 
