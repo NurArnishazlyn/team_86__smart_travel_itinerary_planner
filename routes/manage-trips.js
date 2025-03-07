@@ -51,4 +51,48 @@ router.get("/", (req, res) => {
     });
 });
 
+router.post("/confirm-trip", (req, res) => {
+    const { trip_id, user_id, title, destination, trip_start_date, trip_end_date, image_path } = req.body;
+
+    if (!trip_id || !user_id || !title || !destination || !trip_start_date || !trip_end_date) {
+        return res.status(400).json({ error: "Missing trip details" });
+    }
+
+    // Check if the trip already exists in upcoming_trips
+    // const checkSQL = `SELECT * FROM upcoming_trips WHERE trip_id = ? AND user_id = ?`;
+    // db.get(checkSQL, [trip_id, user_id], (err, row) => {
+    //     if (err) {
+    //         return res.status(500).json({ error: "Database query failed." });
+    //     }
+
+    //     if (row) {
+    //         return res.status(400).json({ error: "Trip is already in upcoming trips." });
+    //     }
+    const checkSQL = `SELECT COUNT(*) AS count FROM upcoming_trips WHERE trip_id = ? AND user_id = ?`;
+
+    db.get(checkSQL, [trip_id, user_id], (err, row) => {
+    if (err) {
+        console.error("Database Query Failed:", err);
+        return res.status(500).json({ error: "Database query failed." });
+    }
+
+    if (row.count > 0) {  // Only block if this specific user already confirmed this trip
+        return res.status(400).json({ error: "You have already confirmed this trip." });
+    }
+
+
+        // Insert trip into upcoming_trips with new unique ID
+        const insertSQL = `
+            INSERT INTO upcoming_trips (trip_id, user_id, title, destination, trip_start_date, trip_end_date, image_path)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
+        db.run(insertSQL, [trip_id, user_id, title, destination, trip_start_date, trip_end_date, image_path], function (err) {
+            if (err) {
+                return res.status(500).json({ error: "Failed to insert trip into upcoming trips." });
+            }
+            return res.json({ success: true, message: "Trip confirmed and added to upcoming trips!" });
+        });
+    });
+});
+
 module.exports = router;

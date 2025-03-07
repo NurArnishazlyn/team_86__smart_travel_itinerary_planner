@@ -85,34 +85,6 @@ CREATE TABLE IF NOT EXISTS blog_post_comments (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
---- Manage-Trips Start ---
-
-CREATE TABLE IF NOT EXISTS upcoming_trips (
-    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,  
-    title TEXT NOT NULL,
-    destination TEXT NOT NULL,
-    trip_start_date DATE NOT NULL,
-    trip_end_date DATE NOT NULL,
-    image_path TEXT, 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS past_trips (
-    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,  
-    title TEXT NOT NULL,
-    destination TEXT NOT NULL,
-    trip_start_date DATE NOT NULL,
-    trip_end_date DATE NOT NULL,
-    image_path TEXT,
-    moved_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Date it was moved from upcoming_trips
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
---- Manage-Trips End ---
-
 --- Itinerary Page Start ---
 
 CREATE TABLE trips (
@@ -120,6 +92,8 @@ CREATE TABLE trips (
     user_id INTEGER NOT NULL,
     trip_name TEXT NOT NULL,
     description TEXT,
+    trip_start_date DATE NOT NULL, 
+    trip_end_date DATE NOT NULL,  
     image_path TEXT DEFAULT '/images/default-trip.jpg',
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -160,18 +134,22 @@ CREATE TABLE restaurants (
     rating REAL CHECK (rating BETWEEN 0 AND 5),
     price TEXT,
     image_path TEXT DEFAULT '/images/default-food.jpg',
+    votes INTEGER DEFAULT 5,
     FOREIGN KEY (trip_id) REFERENCES trips(trip_id)
 );
 
-CREATE TABLE food_votes (
-    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE shopping (
+    shop_id INTEGER PRIMARY KEY AUTOINCREMENT,
     trip_id INTEGER NOT NULL,
-    restaurant_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    vote_type TEXT CHECK (vote_type IN ('upvote', 'downvote')),
-    FOREIGN KEY (trip_id) REFERENCES trips(trip_id),
-    FOREIGN KEY (restaurant_id) REFERENCES restaurants(restaurant_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    name TEXT NOT NULL,
+    reviews INTEGER DEFAULT 0,
+    rating REAL CHECK (rating BETWEEN 0 and 5),
+    opening_time TEXT,
+    closing_time TEXT,
+    image_path TEXT DEFAULT '/images/default-shopping.jpg',
+    upvotes INTEGER DEFAULT 0,
+    downvotes INTEGER DEFAULT 0,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id)
 );
 
 CREATE TABLE hotels (
@@ -183,32 +161,42 @@ CREATE TABLE hotels (
     transport_details TEXT,
     price TEXT,
     image_path TEXT DEFAULT '/images/default-hotel.jpg',
-    votes INTEGER DEFAULT 0,
+    upvotes INTEGER DEFAULT 0,
+    downvotes INTEGER DEFAULT 0,
     FOREIGN KEY (trip_id) REFERENCES trips(trip_id)
-);
-
-CREATE TABLE shopping (
-    shop_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    trip_id INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    reviews INTEGER,
-    time_slot TEXT,
-    image_path TEXT DEFAULT '/images/default-shopping.jpg',
-    FOREIGN KEY (trip_id) REFERENCES trips(trip_id)
-);
-
-CREATE TABLE shopping_votes (
-    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    trip_id INTEGER NOT NULL,
-    shop_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    vote_type TEXT CHECK (vote_type IN ('upvote', 'downvote')),
-    FOREIGN KEY (trip_id) REFERENCES trips(trip_id),
-    FOREIGN KEY (shop_id) REFERENCES shopping(shop_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 --- Itinerary Page End ---
+
+--- Manage-Trips Start ---
+
+CREATE TABLE IF NOT EXISTS upcoming_trips (
+    upcoming_trip_id INTEGER PRIMARY KEY AUTOINCREMENT,  
+    trip_id INTEGER NOT NULL,  
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (trip_id) REFERENCES trips(trip_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS past_trips (
+    trip_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,  
+    title TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    trip_start_date DATE NOT NULL,
+    trip_end_date DATE NOT NULL,
+    image_path TEXT,
+    moved_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Date it was moved from upcoming_trips
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+--- Manage-Trips End ---
 
 -- Insert default users
 INSERT OR IGNORE INTO users (full_name, username, password, phone) 
@@ -289,8 +277,8 @@ AND u.username IN ('john_doe', 'jane_doe');
 
 --- Itinerary Page Dummy Data ---
 
-INSERT INTO trips (user_id, trip_name, description, image_path) 
-VALUES (1, 'Tokyo', 'Summer Trip With Friends. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacinia felis sit amet ipsum pretium viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', '/images/bali-h.jpg');
+INSERT INTO trips (user_id, trip_name, description, trip_start_date, trip_end_date, image_path) 
+VALUES (1, 'Tokyo', 'Summer Trip With Friends. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam lacinia felis sit amet ipsum pretium viverra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', '2025-12-19', '2025-12-24', '/images/tokyo.jpg'),(1, 'Bali Exploration', 'A great trip to Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg');
 
 INSERT INTO trip_members (trip_id, member_name) VALUES 
 (1, 'Neo'),
@@ -300,22 +288,22 @@ INSERT INTO trip_members (trip_id, member_name) VALUES
 (1, 'Jeo');
 
 INSERT INTO flights (trip_id, departure, arrival, departure_time, arrival_time) 
-VALUES (1, 'Singapore Terminal 1', 'NRT Terminal 1', '19 December 2025, 11PM SGT', '20 December 2025, 9AM JST');
+VALUES (1, 'Singapore Terminal 1', 'NRT Terminal 1', '11PM SGT', '9AM JST');
 
 INSERT INTO city_center (trip_id, departure, arrival, transport, arrival_time) VALUES (1, 'NRT Terminal 1', 'Tokyo Station', 'Skyliner', '10AM JST');
 
-INSERT INTO restaurants (trip_id, name, rating, price, image_path) VALUES (1, 'Tokyo Ramen Street', 4.7, '1000yen - 2000yen', '/images/maldives-h.jpg'),
-(1, 'Soranoiro Nippon', 4.5, '1000yen - 2000yen', '/images/bali-h.jpg');
+INSERT INTO restaurants (trip_id, name, rating, price, image_path) VALUES (1, 'Tokyo Ramen Street', 4.7, '1000yen - 1500yen', '/images/ramen1.jpg'),
+(1, 'Soranoiro Nippon', 4.5, '1500yen - 2000yen', '/images/ramen2.jpg');
 
-INSERT INTO hotels (trip_id, hotel_name, hotel_location, check_in, transport_details, price, image_path) VALUES (1, 'Metropolitan Tokyo Marunouchi', 'Nihombashi', '3:00pm JST', 'Skyliner', 'SGD 329/Night', '/images/london-h.jpg');
+INSERT INTO hotels (trip_id, hotel_name, hotel_location, check_in, transport_details, price, image_path) VALUES (1, 'Metropolitan Tokyo Marunouchi', 'Nihombashi', '3:00pm JST', 'Skyliner', 'SGD 329/Night', '/images/hotel.jpg');
+
+INSERT INTO shopping (trip_id, name, reviews, rating, opening_time, closing_time, image_path, upvotes, downvotes) VALUES (1, 'Pokemon Center', 600, 5, '10AM JST', '10PM JST', '/images/maldives-h.jpg', 0, 0),(1, 'Don Quijote', 300, 4, '11AM JST', '6PM JST', '/images/london-h.jpg', 0, 0),(1, 'Shimo Kitazawa', 450, 5, '11.30AM JST', '8.30PM JST', '/images/maldives-h.jpg', 0, 0),(1, 'Akihabara', 750, 5, '8.30AM JST', '8PM JST', '/images/london-h.jpg', 0, 0);
 
 --- Itinerary Page Dummy Data ---
 
 -- Insert sample upcoming trips
-INSERT INTO upcoming_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
-(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
-(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
-(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
+INSERT INTO upcoming_trips (trip_id, user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
+(2, 1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg');
 
 -- Insert sample past trips
 INSERT INTO past_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES

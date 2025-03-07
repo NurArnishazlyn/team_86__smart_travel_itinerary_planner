@@ -99,11 +99,11 @@
 
                             <!-- Voting Section -->
                             <div class="vote-section mt-3 d-flex align-items-center gap-3">
-                                <button class="btn btn-success vote-btn" data-vote="up" data-trip-id="<%= trip.trip_id %>">👍 
-                                    <span class="upvote-count"><%= center.upvotes %></span>
+                                <button class="vote-btn city-vote" data-trip-id="<%= trip.trip_id %>" data-vote="up">
+                                    👍 <span class="upvote-count"><%= center.upvotes %></span>
                                 </button>
-                                <button class="btn btn-danger vote-btn" data-vote="down" data-trip-id="<%= trip.trip_id %>">👎 
-                                    <span class="downvote-count"><%= center.downvotes %></span>
+                                <button class="vote-btn city-vote" data-trip-id="<%= trip.trip_id %>" data-vote="down">
+                                    👎 <span class="downvote-count"><%= center.downvotes %></span>
                                 </button>
                             </div>
                         </div>
@@ -144,35 +144,30 @@
                         <div class="poll-section p-3 text-center">
                             <h5>Which restaurant do you prefer?</h5>
                             <div class="poll-bar">
-                                <button class="poll-btn left" onclick="vote('ramen')">Tokyo Ramen Street</button>
+                                <button class="poll-btn left vote-btn restaurant-vote" data-trip-id="<%= trip.trip_id %>" data-restaurant-id="<%= restaurants[0].restaurant_id %>" data-vote="up">
+                                    <%= restaurants[0].name %>
+                                </button>
                                 <div class="bar-container">
                                     <div class="bar-fill" id="barFill"></div>
-                                    <span id="voteText">50%</span>
+                                    <span id="voteText"><%= Math.round((restaurants[0].votes / (restaurants[0].votes + restaurants[1].votes)) * 100) %>%</span>
                                 </div>
-                                <button class="poll-btn right" onclick="vote('soranoiro')">Soranoiro Nippon</button>
+                                <button class="poll-btn right vote-btn restaurant-vote" data-trip-id="<%= trip.trip_id %>" data-restaurant-id="<%= restaurants[1].restaurant_id %>" data-vote="up">
+                                    <%= restaurants[1].name %>
+                                </button>
                             </div>
-                        </div>
+                        </div>                                              
                     </div>
                 
                     <!-- Right Section: Map -->
                     <div class="restaurant-map p-3">
-                        <iframe
-                            width="400"
-                            height="300"
-                            style="border:0; border-radius: 15px;"
-                            loading="lazy"
-                            allowfullscreen
-                            referrerpolicy="no-referrer-when-downgrade"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25831856.348940488!2d137.49763106510805!3d36.204823899881755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x60188b8682d4de9f%3A0xd63d9e2e5f2a1e31!2sTokyo%20Ramen%20Street!5e0!3m2!1sen!2sjp!4v1709111111111!5m2!1sen!2sjp">
-                        </iframe>
+                        <iframe src="https://www.google.com/maps/d/u/1/embed?mid=1gRDmqn1FduCzvdM1_XGSVnHW_abRUz0&ehbc=2E312F&noprof=1" width="640" height="480"></iframe>
                     </div>
                 </div>
 
-                <div class="shopping-section">
-                    <!-- First Shopping Card -->
+                <!-- <div class="shopping-section">
                     <div class="shopping-card">
                         <div class="shopping-header">
-                            <h5>Shopping - Pokémon Center</h5>
+                            <h5 class>Shopping</h5>
                             <span class="more-options">...</span>
                         </div>
                         <div class="shopping-body">
@@ -194,10 +189,9 @@
                         </div>
                     </div>
                 
-                    <!-- Second Shopping Card -->
                     <div class="shopping-card">
                         <div class="shopping-header">
-                            <h5>Shopping - Pokémon Center</h5>
+                            <h5>Shopping</h5>
                             <span class="more-options">...</span>
                         </div>
                         <div class="shopping-body">
@@ -219,10 +213,9 @@
                         </div>
                     </div>
                     
-                    <!-- Third Shopping Card -->
                     <div class="shopping-card">
                         <div class="shopping-header">
-                            <h5>Shopping - Pokémon Center</h5>
+                            <h5>Shopping</h5>
                             <span class="more-options">...</span>
                         </div>
                         <div class="shopping-body">
@@ -244,10 +237,9 @@
                         </div>
                     </div>
 
-                    <!-- Fourth Shopping Card -->
                     <div class="shopping-card">
                         <div class="shopping-header">
-                            <h5>Shopping - Pokémon Center</h5>
+                            <h5>Shopping</h5>
                             <span class="more-options">...</span>
                         </div>
                         <div class="shopping-body">
@@ -268,7 +260,42 @@
                             </div>
                         </div>
                     </div>
-                </div>     
+                </div>      -->
+
+                <div class="shopping-section">
+                    <% if (shopping.length > 0) { %>
+                        <% shopping.forEach(shop => { %>
+                            <div class="shopping-card">
+                                <div class="shopping-header">
+                                    <h5>Shopping</h5>
+                                    <span class="more-options">...</span>
+                                </div>
+                                <div class="shopping-body">
+                                    <div class="shopping-info">
+                                        <p><b><%= shop.name %></b></p>
+                                        <p>Reviews: <%= shop.reviews %> ⭐⭐⭐⭐⭐</p>
+                                        <p><%= shop.opening_time %> to <%= shop.closing_time %></p>
+                                    </div>
+                                    <div class="shopping-img">
+                                        <img src="<%= shop.image_path %>" alt="<%= shop.name %>">
+                                    </div>
+                                </div>
+                                <div class="shopping-footer">
+                                    <div class="votes">
+                                        <button class="vote-btn shopping-vote" data-trip-id="<%= trip.trip_id %>" data-shop-id="<%= shop.shop_id %>" data-vote="up">
+                                            👍 <span class="upvote-count"><%= shop.upvotes %></span>
+                                        </button>
+                                        <button class="vote-btn shopping-vote" data-trip-id="<%= trip.trip_id %>" data-shop-id="<%= shop.shop_id %>" data-vote="down">
+                                            👎 <span class="downvote-count"><%= shop.downvotes %></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-center">No shopping places available for this trip.</p>
+                    <% } %>
+                </div>                
                 
                 <div class="hotel-section d-flex gap-0">
                     <!-- Left Section: Hotel Details -->
@@ -288,17 +315,16 @@
                                 </div>
                                 <div class="hotel-footer d-flex justify-content-between align-items-center">
                                     <div class="votes">
-                                        <button class="vote-btn upvote" data-hotel-id="<%= hotel.hotel_id %>">⬆</button>
-                                        <button class="vote-btn downvote" data-hotel-id="<%= hotel.hotel_id %>">⬇</button>
-                                        <span class="vote-score"><%= hotel.votes %>/5 Voted</span>
+                                        <button class="vote-btn hotel-vote" data-trip-id="<%= trip.trip_id %>" data-hotel-id="<%= hotel.hotel_id %>" data-vote="up">
+                                            👍 <span class="upvote-count"><%= hotel.upvotes %></span>
+                                        </button>
+                                        <button class="vote-btn hotel-vote" data-trip-id="<%= trip.trip_id %>" data-hotel-id="<%= hotel.hotel_id %>" data-vote="down">
+                                            👎 <span class="downvote-count"><%= hotel.downvotes %></span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        <% }) %>
-                    <% } else { %>
-                        <p class="text-center">No hotels available for this trip.</p>
-                    <% } %>                    
-                
+
                     <!-- Center Section: Map -->
                     <div class="hotel-map">
                         <iframe
@@ -314,9 +340,26 @@
                 
                     <!-- Right Section: Hotel Image -->
                     <div class="hotel-image">
-                        <img src="/images/bali-h.jpg" alt="Hotel Metropolitan Tokyo">
+                        <img src="<%= hotel.image_path %>" alt="Hotel Metropolitan Tokyo">
                     </div>
-                </div>                
+                        <% }) %>
+                    <% } else { %>
+                        <p class="text-center">No hotels available for this trip.</p>
+                    <% } %>                    
+                </div>  
+                
+                <div class="confirm-trip p-5 d-flex justify-content-center align-items-center">
+                    <button id="confirmTripBtn" class="btn btn-success"
+                        data-trip-id="<%= trip.trip_id %>"
+                        data-title="<%= trip.trip_name %>"
+                        data-destination="<%= trip.trip_name %>"
+                        data-start-date="<%= trip.trip_start_date %>"
+                        data-end-date="<%= trip.trip_end_date %>"
+                        data-image-path="<%= trip.image_path %>"
+                    >
+                        Confirm Trip
+                    </button>
+                </div>                                           
 
             </div>
         </div>
@@ -390,83 +433,6 @@
             [35.7719, 140.3929]  // Narita
         ], {color: 'blue'}).addTo(map);
     });
-
-//     document.addEventListener("DOMContentLoaded", function () {
-//     let upvotes = 0;
-//     let downvotes = 0;
-
-//     const upvoteButton = document.querySelector(".vote-btn[data-vote='up']");
-//     const downvoteButton = document.querySelector(".vote-btn[data-vote='down']");
-//     const upvoteCount = document.querySelector(".upvote-count");
-//     const downvoteCount = document.querySelector(".downvote-count");
-//     const voteAverage = document.querySelector(".vote-average");
-
-//     upvoteButton.addEventListener("click", function () {
-//         upvotes++;
-//         upvoteCount.textContent = upvotes;
-//         updateVoteAverage();
-//     });
-
-//     downvoteButton.addEventListener("click", function () {
-//         downvotes++;
-//         downvoteCount.textContent = downvotes;
-//         updateVoteAverage();
-//     });
-
-//     function updateVoteAverage() {
-//         let totalVotes = upvotes + downvotes;
-//         if (totalVotes === 0) {
-//             voteAverage.textContent = "0";
-//         } else {
-//             let avgRating = (upvotes / totalVotes) * 5;
-//             voteAverage.textContent = avgRating.toFixed(1);
-//         }
-//     }
-// });
-
-document.addEventListener("DOMContentLoaded", function () {
-    let votesRamen = 5;
-    let votesSoranoiro = 5;
-
-    function updateBar() {
-        let totalVotes = votesRamen + votesSoranoiro;
-        let ramenPercentage = Math.round((votesRamen / totalVotes) * 100);
-        document.getElementById("barFill").style.width = ramenPercentage + "%";
-        document.getElementById("voteText").textContent = ramenPercentage + "%";
-    }
-
-    window.vote = function (restaurant) {
-        if (restaurant === "ramen") {
-            votesRamen++;
-        } else if (restaurant === "soranoiro") {
-            votesSoranoiro++;
-        }
-        updateBar();
-    };
-
-    updateBar(); // Set initial bar state
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const voteButtons = document.querySelectorAll(".vote-btn");
-
-    voteButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            let voteScore = this.closest(".shopping-footer").querySelector(".vote-score");
-            let currentScore = parseInt(voteScore.textContent.split("/")[0]);
-
-            if (this.classList.contains("upvote")) {
-                currentScore++;
-            } else if (this.classList.contains("downvote")) {
-                currentScore = Math.max(0, currentScore - 1);
-            }
-
-            voteScore.textContent = `${currentScore}/5 Voted`;
-        });
-    });
-});
-
-
     </script>
 
     <!-- CSS Styling -->
@@ -778,21 +744,20 @@ display: flex;
     color: white;
 }
 
-/* shopping */
-/* Ensure the shopping section is centered */
+/* Shopping */
+
 .shopping-section {
     display: flex;
-    justify-content: space-between; /* Centers the cards */
-    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    justify-content: space-between; 
+    flex-wrap: wrap; 
     gap: 20px;
     padding: 20px;
 }
 
-/* Shopping Card Styling */
 .shopping-card {
-    background-color: #f8d7da; /* Light pink background */
+    background-color: #f8d7da; 
     border-radius: 12px;
-    width: 280px; /* Fixed width */
+    width: 280px; 
     box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 12px;
     display: flex;
@@ -800,7 +765,6 @@ display: flex;
     justify-content: space-between;
 }
 
-/* Header with title and more options */
 .shopping-header {
     display: flex;
     justify-content: space-between;
@@ -810,14 +774,12 @@ display: flex;
     color: #444;
 }
 
-/* More options button */
 .more-options {
     cursor: pointer;
     font-size: 18px;
     color: #666;
 }
 
-/* Shopping body layout */
 .shopping-body {
     display: flex;
     justify-content: space-between;
@@ -825,14 +787,12 @@ display: flex;
     margin-top: 10px;
 }
 
-/* Restaurant information */
 .shopping-info {
     font-size: 14px;
     flex: 1;
     color: #555;
 }
 
-/* Restaurant image */
 .shopping-img img {
     width: 80px;
     height: 60px;
@@ -841,7 +801,6 @@ display: flex;
     margin-left: 10px;
 }
 
-/* Footer layout */
 .shopping-footer {
     margin-top: 10px;
     display: flex;
@@ -849,7 +808,6 @@ display: flex;
     align-items: center;
 }
 
-/* Voting Buttons */
 .votes {
     display: flex;
     align-items: center;
@@ -865,23 +823,19 @@ display: flex;
     transition: 0.3s;
 }
 
-.vote-btn.upvote {
-    color: green;
+.vote-btn:hover {
+    background-color: rgb(248, 145, 162);
+    transition: ease-out;
 }
 
-.vote-btn.downvote {
-    color: red;
-}
-
-/* Vote Score */
 .vote-score {
     font-size: 14px;
     font-weight: bold;
     color: #444;
 }
 
-/* hotel */
-/* Main Section for Hotel Details */
+/* Hotel */
+
 .hotel-section {
     display: flex;
     justify-content: space-evenly; /* Center content */
@@ -891,23 +845,21 @@ display: flex;
     padding: 20px;
 }
 
-/* Hotel Card Container */
 .hotel-card {
-    background-color: #f5f5f5; /* Light gray background */
+    background-color: #f5f5f5; 
     border-radius: 12px;
-    width: 400px; /* Fixed width */
+    width: 400px; 
     box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
     padding: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center; /* Center text */
+    text-align: center; 
     position: relative;
 }
 
-/* Hotel Header */
 .hotel-header {
-    background-color: #f8cdd2; /* Light pink header */
+    background-color: #f8cdd2; 
     width: 100%;
     padding: 10px;
     text-align: center;
@@ -917,7 +869,6 @@ display: flex;
     border-top-right-radius: 15px;
 }
 
-/* Hotel Info Styling */
 .hotel-info {
     font-size: 16px;
     color: #333;
@@ -925,7 +876,6 @@ display: flex;
     padding: 15px;
 }
 
-/* Soft Rounded Effect */
 .hotel-card::after {
     content: "";
     position: absolute;
@@ -939,20 +889,16 @@ display: flex;
     filter: blur(5px);
 }
 
-/* Center Alignment for Consistency */
 .hotel-info p {
     margin: 5px 0;
 }
 
-
-/* Hotel Details Card */
 .more-options {
     cursor: pointer;
     font-size: 18px;
     color: #666;
 }
 
-/* Voting Section */
 .votes {
     display: flex;
     align-items: center;
@@ -976,21 +922,18 @@ display: flex;
     color: red;
 }
 
-/* Vote Score */
 .vote-score {
     font-size: 14px;
     font-weight: bold;
     color: #444;
 }
 
-/* Map Section */
 .hotel-map iframe {
     width: 400px;
     height: 250px;
     border-radius: 10px;
 }
 
-/* Hotel Image Section */
 .hotel-image img {
     width: 400px;
     height: 250px;
@@ -998,8 +941,6 @@ display: flex;
     border-radius: 10px;
 }
 
-
-/* Default: Hide navigation buttons on small screens */
 @media (max-width: 420px) {
     .nav-buttons {
         visibility: hidden;
@@ -1014,13 +955,11 @@ display: flex;
         transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
-    /* Show buttons when toggle is active */
     .nav-buttons.active {
         visibility: visible;
         opacity: 1;
     }
 
-    /* Show the menu toggle below 420px */
     .menu-toggle {
         display: block;
         background: none;
@@ -1045,7 +984,6 @@ display: flex;
     }
 }
 
-/* Above 420px: Show buttons normally, hide toggle button */
 @media (min-width: 604px) {
     .nav-buttons {
         visibility: visible;
@@ -1063,5 +1001,6 @@ display: flex;
 
     </style>
 <script src="/js/itinerary.js"></script>
+<script src="/js/manage-trips.js"></script>
 </body>
 </html>
