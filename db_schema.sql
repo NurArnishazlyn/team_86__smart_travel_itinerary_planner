@@ -202,13 +202,17 @@ CREATE TABLE IF NOT EXISTS past_trips (
 INSERT OR IGNORE INTO users (full_name, username, password, phone) 
 VALUES 
     ('John Doe', 'john_doe', 'hashed_password123', '+6512345678'),
-    ('Jane Doe', 'jane_doe', 'hashed_password456', '+6523456789');
+    ('Jane Doe', 'jane_doe', 'hashed_password456', '+6523456789'),
+    ('Alice Smith', 'alice_smith', 'hashed_password789', '+6534567890'),
+    ('Bob Johnson', 'bob_johnson', 'hashed_password012', '+6545678901');
 
 -- Insert default email accounts
 INSERT OR IGNORE INTO email_accounts (email_address, user_id) 
 VALUES 
     ('john.doe@example.com', 1),
-    ('jane.doe@example.com', 2);
+    ('jane.doe@example.com', 2),
+    ('alice.smith@example.com', 3),
+    ('bob.johnson@example.com', 4);
 
 -- Insert default itineraries
 INSERT INTO itineraries (user_id, title, description, start_date, end_date) 
