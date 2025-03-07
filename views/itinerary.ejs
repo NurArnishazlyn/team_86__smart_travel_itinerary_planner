@@ -24,8 +24,8 @@
             <div class="nav-buttons">
                 <button class="btn me-2 text-white" onclick="redirectToHome()">Home</button>
                 <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
-                <button class="btn me-2 text-white">Hotels</button>
-                <button class="btn me-2 text-white">Promotions</button>
+                <button class="btn me-2 text-white" onclick="redirectToHotels()">Hotels</button>
+                <button class="btn me-2 text-white" onclick="redirectToPromotions()">Promotions</button>
                 <button class="btn me-2 text-white" onclick="redirectToManage()">Manage-Trips</button>
             </div>
         </div>
@@ -409,6 +409,16 @@
         function redirectToManage()
         {
         window.location.href = "/manage-trips"
+        }
+
+        function redirectToHotels()
+        {
+        window.location.href = "/hotels"
+        }
+
+        function redirectToPromotions()
+        {
+        window.location.href = "/deals"
         }
 
         document.addEventListener("DOMContentLoaded", function () {
