@@ -325,42 +325,42 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 );
 
 -- -- Reviews Table
--- CREATE TABLE IF NOT EXISTS reviews (
---     id INTEGER PRIMARY KEY AUTOINCREMENT,
---     user_id INTEGER NOT NULL,
---     profile_img TEXT DEFAULT '/images/default-profile.jpg',
---     trip_title TEXT NOT NULL,
---     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
---     review_text TEXT NOT NULL,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
--- );
+CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    profile_img TEXT DEFAULT '/images/default-profile.jpg',
+    trip_title TEXT NOT NULL,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    review_text TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
 
--- --- Review Dummy Data ---
--- INSERT INTO reviews (user_id, profile_img, trip_title, rating, review_text)
--- VALUES 
--- (1, '/images/profile1.jpg', 'Thailand Adventure', 5, 
---     'This trip was an absolute dream! The itinerary planner made everything seamless. 
---     From the moment we landed in Bangkok to our adventures in Phuket, everything was well-organized. 
---     We were able to customize our trip, vote on activities, and even get real-time updates on weather and local events. 
---     The best part was exploring hidden beaches and local street markets without worrying about scheduling conflicts!'),
+--- Review Dummy Data ---
+INSERT INTO reviews (user_id, profile_img, trip_title, rating, review_text)
+VALUES 
+(1, '/images/profile1.jpg', 'Thailand Adventure', 5, 
+    'This trip was an absolute dream! The itinerary planner made everything seamless. 
+    From the moment we landed in Bangkok to our adventures in Phuket, everything was well-organized. 
+    We were able to customize our trip, vote on activities, and even get real-time updates on weather and local events. 
+    The best part was exploring hidden beaches and local street markets without worrying about scheduling conflicts!'),
 
--- (2, '/images/profile2.jpg', 'Japan Winter Tour', 4, 
---     'Japan in winter is breathtaking! The app helped us manage our schedule efficiently, 
---     ensuring we didn’t miss major highlights like the Sapporo Snow Festival and skiing in Niseko. 
---     The collaboration feature was great, but I wish there were more built-in recommendations for food spots. 
---     Overall, the experience was fantastic, and I’d definitely use this planner for future trips!'),
+(2, '/images/profile2.jpg', 'Japan Winter Tour', 4, 
+    'Japan in winter is breathtaking! The app helped us manage our schedule efficiently, 
+    ensuring we didn’t miss major highlights like the Sapporo Snow Festival and skiing in Niseko. 
+    The collaboration feature was great, but I wish there were more built-in recommendations for food spots. 
+    Overall, the experience was fantastic, and I’d definitely use this planner for future trips!'),
 
--- (3, '/images/profile3.jpg', 'Paris Getaway', 5, 
---     'Visiting Paris has always been my dream, and this app made it even better. 
---     I could add museum visits, sunset river cruises, and food tours to my itinerary and share it with my friends. 
---     We loved being able to sync our plans and get notified when someone suggested a new place. 
---     Exploring Montmartre and seeing the Eiffel Tower sparkle at night was absolutely magical!'),
+(3, '/images/profile3.jpg', 'Paris Getaway', 5, 
+    'Visiting Paris has always been my dream, and this app made it even better. 
+    I could add museum visits, sunset river cruises, and food tours to my itinerary and share it with my friends. 
+    We loved being able to sync our plans and get notified when someone suggested a new place. 
+    Exploring Montmartre and seeing the Eiffel Tower sparkle at night was absolutely magical!'),
 
--- (4, '/images/profile4.jpg', 'Weekend in Bali', 3, 
---     'Bali was beautiful, but I felt like the app lacked some local recommendations for hidden spots. 
---     It worked great for organizing our main activities like Ubud tours and beach hopping in Uluwatu, 
---     but I wish there was an offline mode for areas with poor network coverage. 
---     The planner was still helpful in managing our flights, hotel bookings, and restaurant reservations.');
+(4, '/images/profile4.jpg', 'Weekend in Bali', 3, 
+    'Bali was beautiful, but I felt like the app lacked some local recommendations for hidden spots. 
+    It worked great for organizing our main activities like Ubud tours and beach hopping in Uluwatu, 
+    but I wish there was an offline mode for areas with poor network coverage. 
+    The planner was still helpful in managing our flights, hotel bookings, and restaurant reservations.');
 
 COMMIT;
