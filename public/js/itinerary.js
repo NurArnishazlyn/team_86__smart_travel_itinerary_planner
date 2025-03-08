@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Trip Buttons
+    //Trip-btn
     const tripButtons = document.querySelectorAll(".trip-btn");
 
     tripButtons.forEach(button => {
@@ -171,6 +171,5 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = `/itinerary/${tripId}`;  // Redirect to the selected trip
         });
     });
-    
 });
 

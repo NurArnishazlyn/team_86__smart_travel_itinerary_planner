@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const tripStartDate = this.dataset.startDate;
             const tripEndDate = this.dataset.endDate;
             const imagePath = this.dataset.imagePath;
-            const userId = 1; 
+            const userId = this.dataset.userId; 
 
             // Debugging: Print retrieved values to console
             console.log("Trip ID:", tripId);

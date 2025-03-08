@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
+
 router.get("/:trip_id", (req, res) => {
+
+    if (!req.session.user) {
+        console.log("Unauthorized access attempt to itinerary page. Redirecting to login.");
+        return res.redirect("/login");
+    }
+
     const tripId = req.params.trip_id;
+    const userId = req.session.user.id;
 
     // Query to get trip details
     const sqlTrip = `SELECT * FROM trips WHERE trip_id = ?`;
@@ -59,7 +67,7 @@ router.get("/:trip_id", (req, res) => {
                                     return res.status(500).send("Error fetching shopping.");
                                 }
 
-                                res.render("itinerary", { trip, members, flight, center, restaurants, hotels, shopping });
+                                res.render("itinerary", { trip, members, flight, center, restaurants, hotels, shopping, user: req.session.user });
                             });
                         });
                     });

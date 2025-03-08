@@ -2,7 +2,12 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    const userId = 1; 
+
+    if (!req.session.user) {
+        return res.redirect("/login"); 
+    }
+
+    const userId = req.session.user.id;
 
     // Query for upcoming trips
     let sqlUpcoming = `SELECT * FROM upcoming_trips WHERE user_id = ? ORDER BY trip_start_date ASC`;
@@ -44,7 +49,8 @@ router.get("/", (req, res) => {
                 res.render("manage-trips.ejs", { 
                     upcomingTrips, 
                     pastTrips, 
-                    likedTrips 
+                    likedTrips,
+                    user: req.session.user 
                 });
             });
         });

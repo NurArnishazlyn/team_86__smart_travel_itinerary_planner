@@ -16,16 +16,21 @@
                 <img src="/images/logo.png" alt="Logo" class="logo">
             </a>
 
-            <!-- Menu Toggle Button (☰) for small screens -->
-            <button class="menu-toggle d-lg-none">☰</button>
+            <% if (user) { %>
+                <!-- Menu Toggle Button (☰) for small screens -->
+                <button class="menu-toggle d-lg-none">☰</button>
 
-            <!-- Navigation Buttons -->
-            <div class="nav-buttons">
-                <button class="btn me-2 text-white" onclick="redirectToHome()">Home</button>
-                <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
-                <button class="btn me-2 text-white" onclick="redirectToHotels()">Hotels</button>
-                <button class="btn me-2 text-white" onclick="redirectToPromotions()">Promotions</button>
-            </div>
+                <!-- Navigation Buttons -->
+                <div class="nav-buttons">
+                    <button class="btn me-2 text-white" onclick="redirectToGuides()">Guides</button>
+                    <button class="btn me-2 text-white" onclick="redirectToHotels()">Hotels</button>
+                    <button class="btn me-2 text-white" onclick="redirectToPromotions()">Promotions</button>
+                    <button class="btn me-2 text-white" onclick="redirectToItinerary()">Itinerary</button>
+                    <button class="btn me-2 text-white" onclick="redirectToPromotions()"><a href="/logout" style="text-decoration: none; color: white;">Logout (<%= user.username %>)</a></button>
+                </div>
+            <% } else { %>
+                <a href="/login" class="btn btn-primary">Login</a>
+            <% } %>
         </div>
 
         <div class="main-content p-3">
@@ -154,6 +159,11 @@
         function redirectToPromotions()
         {
         window.location.href = "/deals"
+        }
+
+        function redirectToItinerary()
+        {
+        window.location.href = "/itinerary/1";
         }
     </script>
 
