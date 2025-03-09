@@ -58,7 +58,7 @@ router.get("/:trip_id", (req, res) => {
                                 return res.status(500).send("Error fetching hotels.");
                             }
 
-                            console.log("📊 Restaurants Data Sent to Frontend:", restaurants);
+                            console.log("Restaurants Data Sent to Frontend:", restaurants);
 
                             db.all(sqlShopping, [tripId], (err, shopping) => {
 

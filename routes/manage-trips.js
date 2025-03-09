@@ -64,16 +64,6 @@ router.post("/confirm-trip", (req, res) => {
         return res.status(400).json({ error: "Missing trip details" });
     }
 
-    // Check if the trip already exists in upcoming_trips
-    // const checkSQL = `SELECT * FROM upcoming_trips WHERE trip_id = ? AND user_id = ?`;
-    // db.get(checkSQL, [trip_id, user_id], (err, row) => {
-    //     if (err) {
-    //         return res.status(500).json({ error: "Database query failed." });
-    //     }
-
-    //     if (row) {
-    //         return res.status(400).json({ error: "Trip is already in upcoming trips." });
-    //     }
     const checkSQL = `SELECT COUNT(*) AS count FROM upcoming_trips WHERE trip_id = ? AND user_id = ?`;
 
     db.get(checkSQL, [trip_id, user_id], (err, row) => {
@@ -85,7 +75,6 @@ router.post("/confirm-trip", (req, res) => {
     if (row.count > 0) {  // Only block if this specific user already confirmed this trip
         return res.status(400).json({ error: "You have already confirmed this trip." });
     }
-
 
         // Insert trip into upcoming_trips with new unique ID
         const insertSQL = `

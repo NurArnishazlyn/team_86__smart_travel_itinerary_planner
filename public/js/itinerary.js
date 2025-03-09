@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
         votes2 = parseInt(votes2) || 0;
         const totalVotes = votes1 + votes2;
 
-        if (totalVotes === 0) {
+        if (totalVotes == 0) {
             console.warn("No votes yet. Setting default percentage to 50%.");
             document.getElementById("barFill").style.width = "50%";
             document.getElementById("voteText").textContent = "50%";
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".vote-btn.shopping-vote").forEach(button => {
         button.addEventListener("click", function () {
             const tripId = this.dataset.tripId;
-            const shopId = this.dataset.shopId; // FIXED: Ensure it matches `shop_id`
+            const shopId = this.dataset.shopId; 
             const voteType = this.dataset.vote;
 
             console.log("Clicked Shopping Vote Button", { tripId, shopId, voteType });
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ trip_id: tripId, shop_id: shopId, voteType: voteType }) // FIXED: Sending `shop_id`
+                body: JSON.stringify({ trip_id: tripId, shop_id: shopId, voteType: voteType }) 
             })
             .then(response => response.json())
             .then(data => {
