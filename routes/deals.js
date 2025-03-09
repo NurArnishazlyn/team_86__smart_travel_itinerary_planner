@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Sample promotions (Replace with database query later)
+// List of promotions
 const deals = [
     { title: "20% Off Flights", description: "Get 20% off on all domestic flights booked this week!", image: "/images/deal1.jpg" },
     { title: "Hotel Discount", description: "Book 3 nights and get 1 free at select hotels!", image: "/images/deal2.jpg" },
