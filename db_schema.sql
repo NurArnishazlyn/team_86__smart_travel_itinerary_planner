@@ -22,18 +22,6 @@ CREATE TABLE IF NOT EXISTS email_accounts (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
--- Itineraries Table
-CREATE TABLE IF NOT EXISTS itineraries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
-);
-
 -- Activities Table
 CREATE TABLE IF NOT EXISTS activities (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -213,19 +201,6 @@ VALUES
     ('jane.doe@example.com', 2),
     ('alice.smith@example.com', 3),
     ('bob.johnson@example.com', 4);
-
--- Insert default itineraries
-INSERT INTO itineraries (user_id, title, description, start_date, end_date) 
-VALUES 
-    (1, 'Summer Vacation in Italy', 'Explore Rome, Venice, and Florence', '2025-06-15', '2025-06-30'),
-    (2, 'Weekend Getaway', 'Relaxing weekend in the mountains', '2025-07-20', '2025-07-22');
-
--- Insert default activities
-INSERT INTO activities (itinerary_id, activity_name, activity_date, location, notes) 
-VALUES 
-    (1, 'Visit the Colosseum', '2025-06-16 10:00:00', 'Rome, Italy', 'Buy tickets in advance'),
-    (1, 'Wine Tasting Tour', '2025-06-18 14:00:00', 'Tuscany, Italy', 'Don’t forget to book a driver.'),
-    (2, 'Hike the Blue Ridge Trail', '2025-07-21 08:00:00', 'Blue Ridge Mountains, USA', 'Pack water and snacks');
 
 -- Insert demo data into blog_posts
 INSERT INTO blog_posts (user_id, title, content) VALUES
