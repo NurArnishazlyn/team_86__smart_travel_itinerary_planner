@@ -305,16 +305,6 @@ INSERT INTO shopping (trip_id, name, reviews, rating, opening_time, closing_time
 
 --- Itinerary Page Dummy Data ---
 
--- Insert sample upcoming trips
-INSERT INTO upcoming_trips (trip_id, user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
-(2, 1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg');
-
--- Insert sample past trips
-INSERT INTO past_trips (user_id, title, destination, trip_start_date, trip_end_date, image_path) VALUES
-(1, 'Bali Exploration', 'Bali', '2025-04-12', '2025-04-19', '/images/bali-h.jpg'),
-(1, 'London Tour', 'London', '2025-06-15', '2025-06-18', '/images/london-h.jpg'),
-(2, 'Maldives Adventure', 'Maldives', '2025-07-01', '2025-07-07', '/images/maldives-h.jpg');
-
 -- Contact Messages Table
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
